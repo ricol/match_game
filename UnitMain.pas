@@ -1,14 +1,15 @@
 unit UnitMain;
 
 {
-CONTACT: WANGXINGHE1983@GMAIL.COM
+  CONTACT: WANGXINGHE1983@GMAIL.COM
 }
 
 interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, Menus, ComCtrls, ExtCtrls, StdCtrls, MPlayer, UnitData, UnitShare, UnitStack, MMSystem,
+  Dialogs, Menus, ComCtrls, ExtCtrls, StdCtrls, MPlayer, UnitData, UnitShare,
+  UnitStack, MMSystem,
   AppEvnts;
 
 type
@@ -105,12 +106,12 @@ type
     procedure GameOver();
     procedure ShowArray();
     function GameCheck(): boolean;
-    procedure Draw(i, j: integer; num: integer);
-    procedure Dark(i, j: integer);
-    procedure GetBitmap(var tmpBitmap: TBitmap; tmpNum: integer);
-    procedure DrawLine(tmpData: TLine; tmpNum: integer; tmpFlag: boolean);
-    procedure SetSelected(tmpX, tmpY: integer);
-    procedure ResetSelected(tmpX, tmpY: integer);
+    procedure Draw(i, j: Integer; num: Integer);
+    procedure Dark(i, j: Integer);
+    procedure GetBitmap(var tmpBitmap: TBitmap; tmpNum: Integer);
+    procedure DrawLine(tmpData: TLine; tmpNum: Integer; tmpFlag: boolean);
+    procedure SetSelected(tmpX, tmpY: Integer);
+    procedure ResetSelected(tmpX, tmpY: Integer);
     function GetMusic(): string;
     procedure PlaySound(tmpSound: string);
     procedure DrawGameTime();
@@ -142,8 +143,8 @@ const
 
 var
   GBitMap: TBitmap = nil;
-  GBitMapNumber: integer = 1;
-  GBkGroundNumber: integer = 1;
+  GBitMapNumber: Integer = 1;
+  GBkGroundNumber: Integer = 1;
   GPath: string = '\pic1\';
   GGame: TGameLevel = GAMELEVELLOW;
   GBackGroundColor: TColor = clBlack;
@@ -151,14 +152,15 @@ var
   GChangeType: TArrangeType = ARRANGETYPE0;
   GGameRunning: boolean = false;
   GBackGroundImage: TImage = nil;
-  GLife: integer = 2;
-  GHint: integer = 4;
-  GTime: integer = TOTALTIME;
+  GLife: Integer = 2;
+  GHint: Integer = 4;
+  GTime: Integer = TOTALTIME;
   GModeDebug: boolean = false;
 
 procedure TMainForm.MenuAutoPlayClick(Sender: TObject);
 begin
-  if not GGameRunning then exit;
+  if not GGameRunning then
+    exit;
   MenuAutoPlay.Checked := not MenuAutoPlay.Checked;
   TimerAutoPlay.Enabled := MenuAutoPlay.Checked;
 end;
@@ -186,10 +188,8 @@ procedure TMainForm.MenuGameAboutClick(Sender: TObject);
 var
   s: string;
 begin
-  s := '名称   - 连连看' + sLineBreak +
-    '开发者 - RICOL' + sLineBreak +
-    '版本   - V4.0' + sLineBreak +
-    '联系   - WANGXINGHE1983@GMAIL.COM';
+  s := '名称   - 连连看' + sLineBreak + '开发者 - RICOL' + sLineBreak + '版本   - V4.0' +
+    sLineBreak + '联系   - WANGXINGHE1983@GMAIL.COM';
   MessageBox(Self.Handle, PChar(s), '关于', MB_OK);
 end;
 
@@ -266,9 +266,11 @@ procedure TMainForm.MenuOptionBackGroundClick(Sender: TObject);
 var
   tmpS: string;
 begin
-  if not GGameRunning then exit;
+  if not GGameRunning then
+    exit;
   try
-    tmpS := InputBox('输入', '请输入背景颜色编号(1 - ' + IntToStr(COLORNUM) + '): ', IntToStr(GBkGroundNumber));
+    tmpS := InputBox('输入', '请输入背景颜色编号(1 - ' + IntToStr(COLORNUM) + '): ',
+      IntToStr(GBkGroundNumber));
   except
     tmpS := IntToStr(GBkGroundNumber);
   end;
@@ -284,9 +286,11 @@ procedure TMainForm.MenuOptionBitmapClick(Sender: TObject);
 var
   tmpS: string;
 begin
-  if not GGameRunning then exit;
+  if not GGameRunning then
+    exit;
   try
-    tmpS := InputBox('输入', '请输入图案编号(1 - ' + IntToStr(BITMAPNUM) + '): ', IntToStr(GBitMapNumber));
+    tmpS := InputBox('输入', '请输入图案编号(1 - ' + IntToStr(BITMAPNUM) + '): ',
+      IntToStr(GBitMapNumber));
   except
     tmpS := IntToStr(GBitMapNumber);
   end;
@@ -315,7 +319,8 @@ end;
 
 procedure TMainForm.MenuOptionRearrangeClick(Sender: TObject);
 begin
-  if not GGameRunning then exit;
+  if not GGameRunning then
+    exit;
   if GLife > 0 then
     Dec(GLife)
   else
@@ -385,35 +390,36 @@ begin
   if tmpSound <> 'NULL' then
   begin
     if MainForm.MenuOptionSound.Checked then
-      sndPlaySound(PChar(RESOURCEPATH + '\Sound\' + tmpSound + '.wav'), SND_ASYNC);
+      sndPlaySound(PChar(RESOURCEPATH + '\Sound\' + tmpSound + '.wav'),
+        SND_ASYNC);
   end
   else
     sndPlaySound(nil, SND_ASYNC);
 end;
 
-procedure TMainForm.ResetSelected(tmpX, tmpY: integer);
+procedure TMainForm.ResetSelected(tmpX, tmpY: Integer);
 var
-  Num: integer;
+  num: Integer;
 begin
-  Num := data[tmpX, tmpY];
-  GetBitmap(GBitmap, Num);
-  MainPaintBox.Canvas.Draw(IToX(tmpX), JToY(tmpY), GBitmap);
+  num := data[tmpX, tmpY];
+  GetBitmap(GBitMap, num);
+  MainPaintBox.Canvas.Draw(IToX(tmpX), JToY(tmpY), GBitMap);
 end;
 
-procedure TMainForm.SetSelected(tmpX, tmpY: integer);
+procedure TMainForm.SetSelected(tmpX, tmpY: Integer);
 var
-  Num: integer;
+  num: Integer;
 begin
-  Num := data[tmpX, tmpY];
-  GetBitmap(GBitmap, 0);
-  MainPaintBox.Canvas.Draw(IToX(tmpX), JToY(tmpY), GBitmap);
-  GetBitmap(GBitmap, Num);
-  MainPaintBox.Canvas.Draw(IToX(tmpX), JToY(tmpY), GBitmap, OPACITY);
+  num := data[tmpX, tmpY];
+  GetBitmap(GBitMap, 0);
+  MainPaintBox.Canvas.Draw(IToX(tmpX), JToY(tmpY), GBitMap);
+  GetBitmap(GBitMap, num);
+  MainPaintBox.Canvas.Draw(IToX(tmpX), JToY(tmpY), GBitMap, OPACITY);
 end;
 
 procedure TMainForm.ShowArray;
 var
-  i, j: integer;
+  i, j: Integer;
 begin
   for i := 0 to X - 1 do
     for j := 0 to Y - 1 do
@@ -422,13 +428,15 @@ end;
 
 procedure TMainForm.MenuOptionGetHintClick(Sender: TObject);
 begin
-  if not GGameRunning then exit;
+  if not GGameRunning then
+    exit;
   if GHint > 0 then
     Dec(GHint)
   else
     exit;
   MainPaintBoxPaint(Sender);
-  if (GHintA.X <> 0) and (GHintA.Y <> 0) and (GHintB.X <> 0) and (GHintB.Y <> 0) then
+  if (GHintA.X <> 0) and (GHintA.Y <> 0) and (GHintB.X <> 0) and (GHintB.Y <> 0)
+  then
   begin
     SetSelected(GHintA.X, GHintA.Y);
     SetSelected(GHintB.X, GHintB.Y);
@@ -450,7 +458,7 @@ end;
 procedure TMainForm.TimerAutoPlayTimer(Sender: TObject);
 var
   tmpA, tmpB: TPoint;
-  tmpAX, tmpAY, tmpBX, tmpBY: integer;
+  tmpAX, tmpAY, tmpBX, tmpBY: Integer;
   tmpShiftState: TShiftState;
 begin
   if not GGameRunning then
@@ -458,7 +466,8 @@ begin
     TimerAutoPlay.Enabled := false;
     exit;
   end;
-  if not GetHint(tmpA, tmpB) then exit;
+  if not GetHint(tmpA, tmpB) then
+    exit;
   tmpAX := IToX(tmpA.X);
   tmpAY := JToY(tmpA.Y);
   tmpBX := IToX(tmpB.X);
@@ -471,7 +480,7 @@ end;
 
 procedure TMainForm.TimerGameDelayTimer(Sender: TObject);
 begin
-  dec(GTime);
+  Dec(GTime);
   DrawGameTime();
   if GTime <= 0 then
   begin
@@ -484,7 +493,8 @@ end;
 
 procedure TMainForm.ApplicationEvents1Minimize(Sender: TObject);
 begin
-  if not GGameRunning then exit;
+  if not GGameRunning then
+    exit;
   TimerGameDelay.Enabled := false;
   Beep();
   Application.Title := strCAPTION + ' - 暂停';
@@ -492,40 +502,47 @@ end;
 
 procedure TMainForm.ApplicationEvents1Restore(Sender: TObject);
 begin
-  if not GGameRunning then exit;
+  if not GGameRunning then
+    exit;
   TimerGameDelay.Enabled := true;
   Beep;
   Application.Title := strCAPTION;
 end;
 
-procedure TMainForm.Dark(i, j: integer);
+procedure TMainForm.Dark(i, j: Integer);
 begin
   data[i][j] := 0;
   Draw(i, j, 0);
 end;
 
-procedure TMainForm.Draw(i, j, num: integer);
+procedure TMainForm.Draw(i, j, num: Integer);
 begin
-  GetBitmap(GBitmap, num);
+  GetBitmap(GBitMap, num);
   MainForm.MainPaintBox.Canvas.Draw(IToX(i), JToY(j), GBitMap);
 end;
 
 procedure TMainForm.DrawGameRunningData;
 begin
-  if not GGameRunning then exit;
+  if not GGameRunning then
+    exit;
   with MainPaintBox do
   begin
     Canvas.Font.Color := clYellow;
     Canvas.Font.Size := 10;
     SetBkColor(Canvas.Handle, GBackGroundColor);
     Canvas.TextOut(TEXTSTART, TEXTHEIGHT, '难度：                 ');
-    Canvas.TextOut(TEXTSTART, TEXTHEIGHT, '难度：' + GetStringFromGameLevel(GGame));
-    Canvas.TextOut(TEXTSTART + TEXTSPACE + 20, TEXTHEIGHT, '关卡：                         ');
-    Canvas.TextOut(TEXTSTART + TEXTSPACE + 20, TEXTHEIGHT, '关卡：' + GetStringFromArrangeType(GChangeType));
+    Canvas.TextOut(TEXTSTART, TEXTHEIGHT,
+      '难度：' + GetStringFromGameLevel(GGame));
+    Canvas.TextOut(TEXTSTART + TEXTSPACE + 20, TEXTHEIGHT,
+      '关卡：                         ');
+    Canvas.TextOut(TEXTSTART + TEXTSPACE + 20, TEXTHEIGHT,
+      '关卡：' + GetStringFromArrangeType(GChangeType));
     Canvas.TextOut(TEXTSTART + 3 * TEXTSPACE, TEXTHEIGHT, '生命：     ');
-    Canvas.TextOut(TEXTSTART + 3 * TEXTSPACE, TEXTHEIGHT, '生命：' + IntToStr(GLife));
+    Canvas.TextOut(TEXTSTART + 3 * TEXTSPACE, TEXTHEIGHT,
+      '生命：' + IntToStr(GLife));
     Canvas.TextOut(TEXTSTART + 4 * TEXTSPACE, TEXTHEIGHT, '提示：     ');
-    Canvas.TextOut(TEXTSTART + 4 * TEXTSPACE, TEXTHEIGHT, '提示：' + IntToStr(GHint));
+    Canvas.TextOut(TEXTSTART + 4 * TEXTSPACE, TEXTHEIGHT,
+      '提示：' + IntToStr(GHint));
     Canvas.TextOut(TEXTSTART + 5 * TEXTSPACE, TEXTHEIGHT, '时间：');
   end;
 end;
@@ -537,15 +554,18 @@ begin
     Canvas.Pen.Color := clYellow;
     Canvas.Brush.Color := GBackGroundColor;
     Canvas.Pen.Width := 1;
-    Canvas.Rectangle(TEXTSTART + 5 * TEXTSPACE + GAMETIMESPACE, TEXTHEIGHT, TEXTSTART + 5 * TEXTSPACE + GAMETIMESPACE + TOTALTIME * (integer(GGame) + 1), TEXTHEIGHT + 20);
+    Canvas.Rectangle(TEXTSTART + 5 * TEXTSPACE + GAMETIMESPACE, TEXTHEIGHT,
+      TEXTSTART + 5 * TEXTSPACE + GAMETIMESPACE + TOTALTIME *
+      (Integer(GGame) + 1), TEXTHEIGHT + 20);
     Canvas.Pen.Color := clRed;
     Canvas.Brush.Color := clRed;
-    Canvas.Rectangle(TEXTSTART + 5 * TEXTSPACE + GAMETIMESPACE + 1, TEXTHEIGHT + 1, TEXTSTART + 5 * TEXTSPACE + GAMETIMESPACE + GTime * (integer(GGame) + 1) - 1, TEXTHEIGHT + 20 - 1);
+    Canvas.Rectangle(TEXTSTART + 5 * TEXTSPACE + GAMETIMESPACE + 1,
+      TEXTHEIGHT + 1, TEXTSTART + 5 * TEXTSPACE + GAMETIMESPACE + GTime *
+      (Integer(GGame) + 1) - 1, TEXTHEIGHT + 20 - 1);
   end;
 end;
 
-procedure TMainForm.DrawLine(tmpData: TLine; tmpNum: integer;
-  tmpFlag: boolean);
+procedure TMainForm.DrawLine(tmpData: TLine; tmpNum: Integer; tmpFlag: boolean);
 begin
   if tmpFlag then
   begin
@@ -555,21 +575,30 @@ begin
       Canvas.Pen.Width := 5;
       if tmpNum = 3 then
       begin
-        Canvas.MoveTo(IToX(tmpData[1].X) + R div 2, JToY(tmpData[1].Y) + R div 2);
-        Canvas.LineTo(IToX(tmpData[2].X) + R div 2, JToY(tmpData[2].Y) + R div 2);
-        Canvas.LineTo(IToX(tmpData[3].X) + R div 2, JToY(tmpData[3].Y) + R div 2);
+        Canvas.MoveTo(IToX(tmpData[1].X) + R div 2,
+          JToY(tmpData[1].Y) + R div 2);
+        Canvas.LineTo(IToX(tmpData[2].X) + R div 2,
+          JToY(tmpData[2].Y) + R div 2);
+        Canvas.LineTo(IToX(tmpData[3].X) + R div 2,
+          JToY(tmpData[3].Y) + R div 2);
       end
       else if tmpNum = 2 then
       begin
-        Canvas.MoveTo(IToX(tmpData[1].X) + R div 2, JToY(tmpData[1].Y) + R div 2);
-        Canvas.LineTo(IToX(tmpData[2].X) + R div 2, JToY(tmpData[2].Y) + R div 2);
+        Canvas.MoveTo(IToX(tmpData[1].X) + R div 2,
+          JToY(tmpData[1].Y) + R div 2);
+        Canvas.LineTo(IToX(tmpData[2].X) + R div 2,
+          JToY(tmpData[2].Y) + R div 2);
       end
       else if tmpNum = 4 then
       begin
-        Canvas.MoveTo(IToX(tmpData[1].x) + R div 2, JToY(tmpData[1].Y) + R div 2);
-        Canvas.LineTo(IToX(tmpData[4].x) + R div 2, JToY(tmpData[4].Y) + R div 2);
-        Canvas.LineTo(IToX(tmpData[3].x) + R div 2, JToY(tmpData[3].Y) + R div 2);
-        Canvas.LineTo(IToX(tmpData[2].x) + R div 2, JToY(tmpData[2].Y) + R div 2);
+        Canvas.MoveTo(IToX(tmpData[1].X) + R div 2,
+          JToY(tmpData[1].Y) + R div 2);
+        Canvas.LineTo(IToX(tmpData[4].X) + R div 2,
+          JToY(tmpData[4].Y) + R div 2);
+        Canvas.LineTo(IToX(tmpData[3].X) + R div 2,
+          JToY(tmpData[3].Y) + R div 2);
+        Canvas.LineTo(IToX(tmpData[2].X) + R div 2,
+          JToY(tmpData[2].Y) + R div 2);
       end;
     end;
   end
@@ -582,21 +611,30 @@ begin
       Canvas.Pen.Width := 5;
       if tmpNum = 3 then
       begin
-        Canvas.MoveTo(IToX(tmpData[1].X) + R div 2, JToY(tmpData[1].Y) + R div 2);
-        Canvas.LineTo(IToX(tmpData[2].X) + R div 2, JToY(tmpData[2].Y) + R div 2);
-        Canvas.LineTo(IToX(tmpData[3].X) + R div 2, JToY(tmpData[3].Y) + R div 2);
+        Canvas.MoveTo(IToX(tmpData[1].X) + R div 2,
+          JToY(tmpData[1].Y) + R div 2);
+        Canvas.LineTo(IToX(tmpData[2].X) + R div 2,
+          JToY(tmpData[2].Y) + R div 2);
+        Canvas.LineTo(IToX(tmpData[3].X) + R div 2,
+          JToY(tmpData[3].Y) + R div 2);
       end
       else if tmpNum = 2 then
       begin
-        Canvas.MoveTo(IToX(tmpData[1].X) + R div 2, JToY(tmpData[1].Y) + R div 2);
-        Canvas.LineTo(IToX(tmpData[2].X) + R div 2, JToY(tmpData[2].Y) + R div 2);
+        Canvas.MoveTo(IToX(tmpData[1].X) + R div 2,
+          JToY(tmpData[1].Y) + R div 2);
+        Canvas.LineTo(IToX(tmpData[2].X) + R div 2,
+          JToY(tmpData[2].Y) + R div 2);
       end
       else if tmpNum = 4 then
       begin
-        Canvas.MoveTo(IToX(tmpData[1].x) + R div 2, JToY(tmpData[1].Y) + R div 2);
-        Canvas.LineTo(IToX(tmpData[4].x) + R div 2, JToY(tmpData[4].Y) + R div 2);
-        Canvas.LineTo(IToX(tmpData[3].x) + R div 2, JToY(tmpData[3].Y) + R div 2);
-        Canvas.LineTo(IToX(tmpData[2].x) + R div 2, JToY(tmpData[2].Y) + R div 2);
+        Canvas.MoveTo(IToX(tmpData[1].X) + R div 2,
+          JToY(tmpData[1].Y) + R div 2);
+        Canvas.LineTo(IToX(tmpData[4].X) + R div 2,
+          JToY(tmpData[4].Y) + R div 2);
+        Canvas.LineTo(IToX(tmpData[3].X) + R div 2,
+          JToY(tmpData[3].Y) + R div 2);
+        Canvas.LineTo(IToX(tmpData[2].X) + R div 2,
+          JToY(tmpData[2].Y) + R div 2);
       end;
     end;
   end;
@@ -611,7 +649,8 @@ begin
     GBackGroundImage.Align := alClient;
     GBackGroundImage.Visible := true;
     GBackGroundImage.Stretch := true;
-    GBackGroundImage.Picture.Bitmap.LoadFromFile(RESOURCEPATH + '\BackGround\Start.bmp');
+    GBackGroundImage.Picture.Bitmap.LoadFromFile
+      (RESOURCEPATH + '\BackGround\Start.bmp');
   end;
 end;
 
@@ -619,16 +658,16 @@ procedure TMainForm.FormCreate(Sender: TObject);
 begin
   PanelMain.Color := clBlack;
   DrawStartBitmap();
-  GBitmap := TBitmap.Create;
+  GBitMap := TBitmap.Create;
   randomize;
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
-  if GBitmap <> nil then
+  if GBitMap <> nil then
   begin
-    GBitmap.Free;
-    GBitmap := nil;
+    GBitMap.Free;
+    GBitMap := nil;
   end;
   if GBackGroundImage <> nil then
   begin
@@ -637,7 +676,8 @@ begin
   end;
 end;
 
-procedure TMainForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+procedure TMainForm.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
 begin
   if Key = VK_F5 then
     MenuOptionGetHintClick(Sender)
@@ -657,8 +697,8 @@ begin
     MenuGamePauseClick(Sender)
   else if Key = VK_ESCAPE then
     MenuGameAbandonClick(Sender);
-//  else if Key = VK_RETURN then
-//    SetGamePause(true);
+  // else if Key = VK_RETURN then
+  // SetGamePause(true);
 end;
 
 procedure TMainForm.FormResize(Sender: TObject);
@@ -672,7 +712,7 @@ end;
 
 function TMainForm.GameCheck: boolean;
 var
-  i, j: integer;
+  i, j: Integer;
 begin
   result := true;
   for i := 1 to X - 2 do
@@ -739,7 +779,7 @@ begin
   begin
     Total := 30;
     X := 14;
-    y := 9;
+    Y := 9;
     GLife := 3;
     GHint := 6;
     MenuGameMedium.Checked := true;
@@ -799,24 +839,26 @@ begin
   MainPaintBoxPaint(nil);
 end;
 
-procedure TMainForm.GetBitmap(var tmpBitmap: TBitmap; tmpNum: integer);
+procedure TMainForm.GetBitmap(var tmpBitmap: TBitmap; tmpNum: Integer);
 var
   path: string;
 begin
   if tmpNum = 0 then
   begin
-    path := RESOURCEPATH + '\BackGround\' + IntToStr(ColorToNum(GBackGroundColor)) + '.bmp';
+    path := RESOURCEPATH + '\BackGround\' +
+      IntToStr(ColorToNum(GBackGroundColor)) + '.bmp';
   end
   else
     path := RESOURCEPATH + GPath + IntToStr(tmpNum) + '.bmp';
-  if tmpBitmap <> nil then tmpBitmap.Free;
+  if tmpBitmap <> nil then
+    tmpBitmap.Free;
   tmpBitmap := TBitmap.Create;
   tmpBitmap.LoadFromFile(path);
 end;
 
 function TMainForm.GetMusic: string;
 var
-  tmpNum: integer;
+  tmpNum: Integer;
   tmpS: string;
 begin
   tmpNum := random(MUSICNUM) + 1;
@@ -824,28 +866,30 @@ begin
   result := tmpS;
 end;
 
-procedure TMainForm.MainPaintBoxMouseDown(Sender: TObject;
-  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+procedure TMainForm.MainPaintBoxMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
 var
   temp: TPoint;
   tempResult: boolean;
 begin
   temp.X := XToI(X);
   temp.Y := YToJ(Y);
-  if data[temp.X, temp.Y] = 0 then exit;
+  if data[temp.X, temp.Y] = 0 then
+    exit;
   if StackIsEmpty() then
   begin
-    temp.x := XToI(X);
-    temp.y := YToJ(Y);
+    temp.X := XToI(X);
+    temp.Y := YToJ(Y);
     Push(temp);
     PlaySound('Select');
     SetSelected(temp.X, temp.Y);
   end
   else
   begin
-    temp.x := XToi(X);
-    temp.y := YToj(Y);
-    if (temp.x = GetTop().x) and (temp.y = GetTop().y) then exit;
+    temp.X := XToI(X);
+    temp.Y := YToJ(Y);
+    if (temp.X = GetTop().X) and (temp.Y = GetTop().Y) then
+      exit;
     SetSelected(temp.X, temp.Y);
     if data[GetTop().X, GetTop().Y] <> data[temp.X, temp.Y] then
     begin
@@ -881,8 +925,8 @@ begin
         Sleep(SLEEPTIME);
         DrawLine(ShareLine, 4, false);
       end;
-      Dark(temp.x, temp.y);
-      Dark(GetTop().x, GetTop().y);
+      Dark(temp.X, temp.Y);
+      Dark(GetTop().X, GetTop().Y);
       pop();
       Inc(GTime, 3);
       if GTime > TOTALTIME then
@@ -895,9 +939,9 @@ begin
         begin
           if not TimerAutoPlay.Enabled then
             MessageBox(Self.Handle, '过关!', '信息', MB_OK);
-          inc(GChangeType);
-          inc(GLife, 2);
-          inc(GHint, 3);
+          Inc(GChangeType);
+          Inc(GLife, 2);
+          Inc(GHint, 3);
           GChangeType := TArrangeType(GChangeType);
           GameContinue();
           exit;
@@ -926,7 +970,8 @@ begin
             GameOver();
             GLife := 0;
             PlaySound('GameOver');
-            MessageBox(MainForm.Handle, '游戏结束!', '信息', MB_OK or MB_ICONINFORMATION);
+            MessageBox(MainForm.Handle, '游戏结束!', '信息',
+              MB_OK or MB_ICONINFORMATION);
             exit;
           end;
           MenuOptionRearrangeClick(Sender);
@@ -958,4 +1003,3 @@ begin
 end;
 
 end.
-

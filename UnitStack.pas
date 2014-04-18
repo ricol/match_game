@@ -9,7 +9,7 @@ const
   STACKLEN = 10;
 
 type
-  Stack = array[1..STACKLEN] of TPoint;
+  Stack = array [1 .. STACKLEN] of TPoint;
 
 var
   MyStack: Stack;
@@ -51,14 +51,14 @@ begin
   end
   else
   begin
-    result.x := X;
-    result.y := Y;
+    result.x := x;
+    result.y := y;
   end;
 end;
 
 procedure Push(point: TPoint);
 begin
-  MyStack[StackFlag].x := point.X;
+  MyStack[StackFlag].x := point.x;
   MyStack[StackFlag].y := point.y;
   Inc(StackFlag);
 end;
