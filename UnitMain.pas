@@ -109,11 +109,11 @@ type
     procedure Draw(i, j: Integer; num: Integer);
     procedure Dark(i, j: Integer);
     procedure GetBitmap(var tmpBitmap: TBitmap; tmpNum: Integer);
-    procedure DrawLine(tmpData: TLine; tmpNum: Integer; tmpFlag: boolean);
-    procedure SetSelected(tmpX, tmpY: Integer);
-    procedure ResetSelected(tmpX, tmpY: Integer);
+    procedure DrawLine(line: TLine; num: Integer; flag: boolean);
+    procedure SetSelected(x, y: Integer);
+    procedure ResetSelected(x, y: Integer);
     function GetMusic(): string;
-    procedure PlaySound(tmpSound: string);
+    procedure PlaySound(sound: string);
     procedure DrawGameTime();
     { Private declarations }
   public
@@ -264,19 +264,19 @@ end;
 
 procedure TMainForm.MenuOptionBackGroundClick(Sender: TObject);
 var
-  tmpS: string;
+  s: string;
 begin
   if not GGameRunning then
     exit;
   try
-    tmpS := InputBox(' ‰»Î', '«Î ‰»Î±≥æ∞—’…´±‡∫≈(1 - ' + IntToStr(COLORNUM) + '): ',
+    s := InputBox(' ‰»Î', '«Î ‰»Î±≥æ∞—’…´±‡∫≈(1 - ' + IntToStr(COLORNUM) + '): ',
       IntToStr(GBkGroundNumber));
   except
-    tmpS := IntToStr(GBkGroundNumber);
+    s := IntToStr(GBkGroundNumber);
   end;
-  if (StrToInt(tmpS) < 1) or (StrToInt(tmpS) > COLORNUM) then
-    tmpS := IntToStr(GBkGroundNumber);
-  GBkGroundNumber := StrToInt(tmpS);
+  if (StrToInt(s) < 1) or (StrToInt(s) > COLORNUM) then
+    s := IntToStr(GBkGroundNumber);
+  GBkGroundNumber := StrToInt(s);
   GBackGroundColor := GetColor(GBkGroundNumber);
   PanelMain.Color := GBackGroundColor;
   MainPaintBoxPaint(Sender);
@@ -284,19 +284,19 @@ end;
 
 procedure TMainForm.MenuOptionBitmapClick(Sender: TObject);
 var
-  tmpS: string;
+  s: string;
 begin
   if not GGameRunning then
     exit;
   try
-    tmpS := InputBox(' ‰»Î', '«Î ‰»ÎÕº∞∏±‡∫≈(1 - ' + IntToStr(BITMAPNUM) + '): ',
+    s := InputBox(' ‰»Î', '«Î ‰»ÎÕº∞∏±‡∫≈(1 - ' + IntToStr(BITMAPNUM) + '): ',
       IntToStr(GBitMapNumber));
   except
-    tmpS := IntToStr(GBitMapNumber);
+    s := IntToStr(GBitMapNumber);
   end;
-  if (StrToInt(tmpS) < 1) or (StrToInt(tmpS) > BITMAPNUM) then
-    tmpS := IntToStr(GBitMapNumber);
-  GBitMapNumber := StrToInt(tmpS);
+  if (StrToInt(s) < 1) or (StrToInt(s) > BITMAPNUM) then
+    s := IntToStr(GBitMapNumber);
+  GBitMapNumber := StrToInt(s);
   GPath := '\pic' + IntToStr(GBitMapNumber) + '\';
   MainPaintBoxPaint(Sender);
 end;
@@ -385,36 +385,36 @@ begin
   MainPaintBoxPaint(Sender);
 end;
 
-procedure TMainForm.PlaySound(tmpSound: string);
+procedure TMainForm.PlaySound(sound: string);
 begin
-  if tmpSound <> 'NULL' then
+  if sound <> 'NULL' then
   begin
     if MainForm.MenuOptionSound.Checked then
-      sndPlaySound(PChar(RESOURCEPATH + '\Sound\' + tmpSound + '.wav'),
+      sndPlaySound(PChar(RESOURCEPATH + '\Sound\' + sound + '.wav'),
         SND_ASYNC);
   end
   else
     sndPlaySound(nil, SND_ASYNC);
 end;
 
-procedure TMainForm.ResetSelected(tmpX, tmpY: Integer);
+procedure TMainForm.ResetSelected(x, y: Integer);
 var
   num: Integer;
 begin
-  num := data[tmpX, tmpY];
+  num := data[x, y];
   GetBitmap(GBitMap, num);
-  MainPaintBox.Canvas.Draw(IToX(tmpX), JToY(tmpY), GBitMap);
+  MainPaintBox.Canvas.Draw(IToX(x), JToY(y), GBitMap);
 end;
 
-procedure TMainForm.SetSelected(tmpX, tmpY: Integer);
+procedure TMainForm.SetSelected(x, y: Integer);
 var
   num: Integer;
 begin
-  num := data[tmpX, tmpY];
+  num := data[x, y];
   GetBitmap(GBitMap, 0);
-  MainPaintBox.Canvas.Draw(IToX(tmpX), JToY(tmpY), GBitMap);
+  MainPaintBox.Canvas.Draw(IToX(x), JToY(y), GBitMap);
   GetBitmap(GBitMap, num);
-  MainPaintBox.Canvas.Draw(IToX(tmpX), JToY(tmpY), GBitMap, OPACITY);
+  MainPaintBox.Canvas.Draw(IToX(x), JToY(y), GBitMap, OPACITY);
 end;
 
 procedure TMainForm.ShowArray;
@@ -457,24 +457,24 @@ end;
 
 procedure TMainForm.TimerAutoPlayTimer(Sender: TObject);
 var
-  tmpA, tmpB: TPoint;
-  tmpAX, tmpAY, tmpBX, tmpBY: Integer;
-  tmpShiftState: TShiftState;
+  a, b: TPoint;
+  ax, ay, bx, by: Integer;
+  shiftState: TShiftState;
 begin
   if not GGameRunning then
   begin
     TimerAutoPlay.Enabled := false;
     exit;
   end;
-  if not GetHint(tmpA, tmpB) then
+  if not GetHint(a, b) then
     exit;
-  tmpAX := IToX(tmpA.X);
-  tmpAY := JToY(tmpA.Y);
-  tmpBX := IToX(tmpB.X);
-  tmpBY := JToY(tmpB.Y);
-  MainPaintBoxMouseDown(Sender, mbLeft, tmpShiftState, tmpAX, tmpAY);
+  ax := IToX(a.X);
+  ay := JToY(a.Y);
+  bx := IToX(b.X);
+  by := JToY(b.Y);
+  MainPaintBoxMouseDown(Sender, mbLeft, shiftState, ax, ay);
   Sleep(MYSLEEPTIME);
-  MainPaintBoxMouseDown(Sender, mbLeft, tmpShiftState, tmpBX, tmpBY);
+  MainPaintBoxMouseDown(Sender, mbLeft, shiftState, bx, by);
   Sleep(MYSLEEPTIME);
 end;
 
@@ -565,40 +565,40 @@ begin
   end;
 end;
 
-procedure TMainForm.DrawLine(tmpData: TLine; tmpNum: Integer; tmpFlag: boolean);
+procedure TMainForm.DrawLine(line: TLine; num: Integer; flag: boolean);
 begin
-  if tmpFlag then
+  if flag then
   begin
     with MainForm.MainPaintBox do
     begin
       Canvas.Pen.Color := clRed;
       Canvas.Pen.Width := 5;
-      if tmpNum = 3 then
+      if num = 3 then
       begin
-        Canvas.MoveTo(IToX(tmpData[1].X) + R div 2,
-          JToY(tmpData[1].Y) + R div 2);
-        Canvas.LineTo(IToX(tmpData[2].X) + R div 2,
-          JToY(tmpData[2].Y) + R div 2);
-        Canvas.LineTo(IToX(tmpData[3].X) + R div 2,
-          JToY(tmpData[3].Y) + R div 2);
+        Canvas.MoveTo(IToX(line[1].X) + R div 2,
+          JToY(line[1].Y) + R div 2);
+        Canvas.LineTo(IToX(line[2].X) + R div 2,
+          JToY(line[2].Y) + R div 2);
+        Canvas.LineTo(IToX(line[3].X) + R div 2,
+          JToY(line[3].Y) + R div 2);
       end
-      else if tmpNum = 2 then
+      else if num = 2 then
       begin
-        Canvas.MoveTo(IToX(tmpData[1].X) + R div 2,
-          JToY(tmpData[1].Y) + R div 2);
-        Canvas.LineTo(IToX(tmpData[2].X) + R div 2,
-          JToY(tmpData[2].Y) + R div 2);
+        Canvas.MoveTo(IToX(line[1].X) + R div 2,
+          JToY(line[1].Y) + R div 2);
+        Canvas.LineTo(IToX(line[2].X) + R div 2,
+          JToY(line[2].Y) + R div 2);
       end
-      else if tmpNum = 4 then
+      else if num = 4 then
       begin
-        Canvas.MoveTo(IToX(tmpData[1].X) + R div 2,
-          JToY(tmpData[1].Y) + R div 2);
-        Canvas.LineTo(IToX(tmpData[4].X) + R div 2,
-          JToY(tmpData[4].Y) + R div 2);
-        Canvas.LineTo(IToX(tmpData[3].X) + R div 2,
-          JToY(tmpData[3].Y) + R div 2);
-        Canvas.LineTo(IToX(tmpData[2].X) + R div 2,
-          JToY(tmpData[2].Y) + R div 2);
+        Canvas.MoveTo(IToX(line[1].X) + R div 2,
+          JToY(line[1].Y) + R div 2);
+        Canvas.LineTo(IToX(line[4].X) + R div 2,
+          JToY(line[4].Y) + R div 2);
+        Canvas.LineTo(IToX(line[3].X) + R div 2,
+          JToY(line[3].Y) + R div 2);
+        Canvas.LineTo(IToX(line[2].X) + R div 2,
+          JToY(line[2].Y) + R div 2);
       end;
     end;
   end
@@ -609,32 +609,32 @@ begin
       MainForm.PanelMain.Color := GBackGroundColor;
       Canvas.Pen.Color := GBackGroundColor;
       Canvas.Pen.Width := 5;
-      if tmpNum = 3 then
+      if num = 3 then
       begin
-        Canvas.MoveTo(IToX(tmpData[1].X) + R div 2,
-          JToY(tmpData[1].Y) + R div 2);
-        Canvas.LineTo(IToX(tmpData[2].X) + R div 2,
-          JToY(tmpData[2].Y) + R div 2);
-        Canvas.LineTo(IToX(tmpData[3].X) + R div 2,
-          JToY(tmpData[3].Y) + R div 2);
+        Canvas.MoveTo(IToX(line[1].X) + R div 2,
+          JToY(line[1].Y) + R div 2);
+        Canvas.LineTo(IToX(line[2].X) + R div 2,
+          JToY(line[2].Y) + R div 2);
+        Canvas.LineTo(IToX(line[3].X) + R div 2,
+          JToY(line[3].Y) + R div 2);
       end
-      else if tmpNum = 2 then
+      else if num = 2 then
       begin
-        Canvas.MoveTo(IToX(tmpData[1].X) + R div 2,
-          JToY(tmpData[1].Y) + R div 2);
-        Canvas.LineTo(IToX(tmpData[2].X) + R div 2,
-          JToY(tmpData[2].Y) + R div 2);
+        Canvas.MoveTo(IToX(line[1].X) + R div 2,
+          JToY(line[1].Y) + R div 2);
+        Canvas.LineTo(IToX(line[2].X) + R div 2,
+          JToY(line[2].Y) + R div 2);
       end
-      else if tmpNum = 4 then
+      else if num = 4 then
       begin
-        Canvas.MoveTo(IToX(tmpData[1].X) + R div 2,
-          JToY(tmpData[1].Y) + R div 2);
-        Canvas.LineTo(IToX(tmpData[4].X) + R div 2,
-          JToY(tmpData[4].Y) + R div 2);
-        Canvas.LineTo(IToX(tmpData[3].X) + R div 2,
-          JToY(tmpData[3].Y) + R div 2);
-        Canvas.LineTo(IToX(tmpData[2].X) + R div 2,
-          JToY(tmpData[2].Y) + R div 2);
+        Canvas.MoveTo(IToX(line[1].X) + R div 2,
+          JToY(line[1].Y) + R div 2);
+        Canvas.LineTo(IToX(line[4].X) + R div 2,
+          JToY(line[4].Y) + R div 2);
+        Canvas.LineTo(IToX(line[3].X) + R div 2,
+          JToY(line[3].Y) + R div 2);
+        Canvas.LineTo(IToX(line[2].X) + R div 2,
+          JToY(line[2].Y) + R div 2);
       end;
     end;
   end;
@@ -858,53 +858,53 @@ end;
 
 function TMainForm.GetMusic: string;
 var
-  tmpNum: Integer;
-  tmpS: string;
+  num: Integer;
+  s: string;
 begin
-  tmpNum := random(MUSICNUM) + 1;
-  tmpS := RESOURCEPATH + '\midi\music' + IntToStr(tmpNum) + '.mid';
-  result := tmpS;
+  num := random(MUSICNUM) + 1;
+  s := RESOURCEPATH + '\midi\music' + IntToStr(num) + '.mid';
+  result := s;
 end;
 
 procedure TMainForm.MainPaintBoxMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 var
-  temp: TPoint;
-  tempResult: boolean;
+  p: TPoint;
+  res: boolean;
 begin
-  temp.X := XToI(X);
-  temp.Y := YToJ(Y);
-  if data[temp.X, temp.Y] = 0 then
+  p.X := XToI(X);
+  p.Y := YToJ(Y);
+  if data[p.X, p.Y] = 0 then
     exit;
   if StackIsEmpty() then
   begin
-    temp.X := XToI(X);
-    temp.Y := YToJ(Y);
-    Push(temp);
+    p.X := XToI(X);
+    p.Y := YToJ(Y);
+    Push(p);
     PlaySound('Select');
-    SetSelected(temp.X, temp.Y);
+    SetSelected(p.X, p.Y);
   end
   else
   begin
-    temp.X := XToI(X);
-    temp.Y := YToJ(Y);
-    if (temp.X = GetTop().X) and (temp.Y = GetTop().Y) then
+    p.X := XToI(X);
+    p.Y := YToJ(Y);
+    if (p.X = GetTop().X) and (p.Y = GetTop().Y) then
       exit;
-    SetSelected(temp.X, temp.Y);
-    if data[GetTop().X, GetTop().Y] <> data[temp.X, temp.Y] then
+    SetSelected(p.X, p.Y);
+    if data[GetTop().X, GetTop().Y] <> data[p.X, p.Y] then
     begin
       PlaySound('NotTheSame');
-      ResetSelected(temp.X, temp.Y);
+      ResetSelected(p.X, p.Y);
       ResetSelected(GetTop().X, GetTop().Y);
       MainPaintBoxPaint(Sender);
       pop();
       exit;
     end
     else
-      tempResult := Compare(GetTop(), temp);
+      res := Compare(GetTop(), p);
     if GModeDebug then
-      tempResult := true;
-    if tempResult then
+      res := true;
+    if res then
     begin
       PlaySound('Delete');
       if bIntersect then
@@ -925,7 +925,7 @@ begin
         Sleep(SLEEPTIME);
         DrawLine(ShareLine, 4, false);
       end;
-      Dark(temp.X, temp.Y);
+      Dark(p.X, p.Y);
       Dark(GetTop().X, GetTop().Y);
       pop();
       Inc(GTime, 3);
@@ -981,7 +981,7 @@ begin
     else
     begin
       PlaySound('Reset');
-      ResetSelected(temp.X, temp.Y);
+      ResetSelected(p.X, p.Y);
       ResetSelected(GetTop().X, GetTop().Y);
       MainPaintBoxPaint(Sender);
       pop();

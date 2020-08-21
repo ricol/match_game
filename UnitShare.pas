@@ -31,15 +31,15 @@ const
 var
   X, Y: integer;
 
-function GetColor(tmpNum: integer): TColor;
+function GetColor(num: integer): TColor;
 
-function ColorToNum(tmpColor: TColor): integer;
+function ColorToNum(color: TColor): integer;
 
 implementation
 
-function ColorToNum(tmpColor: TColor): integer;
+function ColorToNum(color: TColor): integer;
 begin
-  case tmpColor of
+  case color of
     clBlack:
       result := 1;
     clMaroon:
@@ -75,9 +75,9 @@ begin
   end;
 end;
 
-function GetColor(tmpNum: integer): TColor;
+function GetColor(num: integer): TColor;
 begin
-  case tmpNum of
+  case num of
     1:
       result := clBlack;
     2:

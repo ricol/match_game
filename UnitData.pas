@@ -1,4 +1,4 @@
-unit UnitData;
+ï»¿unit UnitData;
 
 interface
 
@@ -47,31 +47,31 @@ function Compare(a, b: TPoint): boolean;
 procedure InitData();
 procedure ReArrange();
 procedure RearrangeLeftOverData();
-procedure Swap(var tmpA: integer; var tmpB: integer);
-procedure InitLine(var tmpLine: TLine; var tmpLineLen: integer);
-function BuildUpLine(tmpPoint: TPoint; var tmpLine: TLine;
-  var tmpLineLen: integer; tmpB: TPoint): boolean;
-function BuildRightLine(tmpPoint: TPoint; var tmpLine: TLine;
-  var tmpLineLen: integer; tmpB: TPoint): boolean;
-function BuildDownLine(tmpPoint: TPoint; var tmpLine: TLine;
-  var tmpLineLen: integer; tmpB: TPoint): boolean;
-function BuildLeftLine(tmpPoint: TPoint; var tmpLine: TLine;
-  var tmpLineLen: integer; tmpB: TPoint): boolean;
+procedure Swap(var a: integer; var b: integer);
+procedure InitLine(var line: TLine; var lineLen: integer);
+function BuildUpLine(point: TPoint; var line: TLine;
+  var lineLen: integer; pointB: TPoint): boolean;
+function BuildRightLine(point: TPoint; var line: TLine;
+  var lineLen: integer; pointB: TPoint): boolean;
+function BuildDownLine(point: TPoint; var line: TLine;
+  var lineLen: integer; pB: TPoint): boolean;
+function BuildLeftLine(point: TPoint; var line: TLine;
+  var lineLen: integer; pB: TPoint): boolean;
 function ANearToB(a, b: TPoint): boolean;
 function GetHint(var a: TPoint; var b: TPoint): boolean;
-function LineNotEmpty(tmpLine: TLine; tmpLineLen: integer): boolean;
-function PointIsInArea(tmpPoint: TPoint): boolean;
+function LineNotEmpty(line: TLine; lineLen: integer): boolean;
+function PointIsInArea(p: TPoint): boolean;
 function PointEqualToPoint(a, b: TPoint): boolean;
-function PointIsAvailable(tmpPoint: TPoint): boolean;
-function LineIntersectLine(tmpLineA, tmpLineB: TLine;
-  tmpLineALen, tmpLineBLen: integer; var tmpPoint: TPoint): boolean;
-function HaveLineBetweenLineAndLineHorizon(tmpLineA, tmpLineB: TLine;
-  tmpLineALen, tmpLineBLen: integer; var tmpThirdLine: TLine): boolean;
-function HaveLineBetweenLineAndLineVertical(tmpLineA, tmpLineB: TLine;
-  tmpLineALen, tmpLineBLen: integer; var tmpThirdLine: TLine): boolean;
-function ReArrangeData(tmpType: TArrangeType): boolean;
-function GetStringFromArrangeType(tmpType: TArrangeType): string;
-function GetStringFromGameLevel(tmpLevel: TGameLevel): string;
+function PointIsAvailable(p: TPoint): boolean;
+function LineIntersectLine(lineA, lineB: TLine;
+  lineALen, lineBLen: integer; var point: TPoint): boolean;
+function HaveLineBetweenLineAndLineHorizon(lineA, lineB: TLine;
+  lineALen, lineBLen: integer; var lineThird: TLine): boolean;
+function HaveLineBetweenLineAndLineVertical(lineA, lineB: TLine;
+  lineALen, lineBLen: integer; var lineThird: TLine): boolean;
+function ReArrangeData(t: TArrangeType): boolean;
+function GetStringFromArrangeType(t: TArrangeType): string;
+function GetStringFromGameLevel(lv: TGameLevel): string;
 
 implementation
 
@@ -97,7 +97,7 @@ end;
 
 procedure InitData();
 var
-  i, j, temp: integer;
+  i, j, tmp: integer;
 begin
   SetLength(data, 0, 0);
   SetLength(data, x, y);
@@ -105,9 +105,9 @@ begin
   for i := 1 to (x - 2) div 2 do
     for j := 1 to y - 2 do
     begin
-      temp := random(Total) + 1;
-      data[i, j] := temp;
-      data[i + ((x - 2) div 2), j] := temp;
+      tmp := random(Total) + 1;
+      data[i, j] := tmp;
+      data[i + ((x - 2) div 2), j] := tmp;
     end;
   ReArrange();
   for i := 0 to y - 1 do
@@ -122,56 +122,56 @@ begin
   end;
 end;
 
-procedure Swap(var tmpA: integer; var tmpB: integer);
+procedure Swap(var a: integer; var b: integer);
 var
   tmp: integer;
 begin
-  tmp := tmpA;
-  tmpA := tmpB;
-  tmpB := tmp;
+  tmp := a;
+  a := b;
+  b := tmp;
 end;
 
 procedure ReArrange();
 var
   num: integer;
-  tmpAX, tmpAY, tmpBX, tmpBY: integer;
+  ax, ay, bx, by: integer;
 begin
   randomize();
   for num := 0 to RANDNUM do
   begin
-    tmpAX := random(x - 2) + 1;
-    tmpAY := random(y - 2) + 1;
-    tmpBX := random(x - 2) + 1;
-    tmpBY := random(y - 2) + 1;
-    Swap(data[tmpAX, tmpAY], data[tmpBX, tmpBY]);
+    ax := random(x - 2) + 1;
+    ay := random(y - 2) + 1;
+    bx := random(x - 2) + 1;
+    by := random(y - 2) + 1;
+    Swap(data[ax, ay], data[bx, by]);
   end;
 end;
 
 procedure RearrangeLeftOverData();
 var
   num: integer;
-  tmpAX, tmpAY, tmpBX, tmpBY: integer;
+  ax, ay, bx, by: integer;
 begin
   randomize();
   for num := 0 to RANDNUM do
   begin
     repeat
-      tmpAX := random(x - 2) + 1;
-      tmpAY := random(y - 2) + 1;
-    until data[tmpAX, tmpAY] <> 0;
+      ax := random(x - 2) + 1;
+      ay := random(y - 2) + 1;
+    until data[ax, ay] <> 0;
     repeat
-      tmpBX := random(x - 2) + 1;
-      tmpBY := random(y - 2) + 1;
-    until data[tmpBX, tmpBY] <> 0;
-    Swap(data[tmpAX, tmpAY], data[tmpBX, tmpBY]);
+      bx := random(x - 2) + 1;
+      by := random(y - 2) + 1;
+    until data[bx, by] <> 0;
+    Swap(data[ax, ay], data[bx, by]);
   end;
 end;
 
 function GetHint(var a: TPoint; var b: TPoint): boolean;
 var
   i, j: integer;
-  tmpI, tmpJ: integer;
-  tmpA, tmpB: TPoint;
+  m, n: integer;
+  pA, pB: TPoint;
 begin
   result := false;
   for i := 1 to x - 2 do
@@ -179,24 +179,24 @@ begin
     begin
       if data[i, j] <> 0 then
       begin
-        for tmpI := 1 to x - 2 do
-          for tmpJ := 1 to y - 2 do
+        for m := 1 to x - 2 do
+          for n := 1 to y - 2 do
           begin
-            if (tmpI = i) and (tmpJ = j) then
+            if (m = i) and (n = j) then
               continue;
-            if (data[tmpI, tmpJ] <> 0) then
+            if (data[m, n] <> 0) then
             begin
-              if (data[tmpI, tmpJ] = data[i, j]) then
+              if (data[m, n] = data[i, j]) then
               begin
-                tmpA.x := i;
-                tmpA.y := j;
-                tmpB.x := tmpI;
-                tmpB.y := tmpJ;
-                if Compare(tmpA, tmpB) then
+                pA.x := i;
+                pA.y := j;
+                pB.x := m;
+                pB.y := n;
+                if Compare(pA, pB) then
                 begin
                   result := true;
-                  a := tmpA;
-                  b := tmpB;
+                  a := pA;
+                  b := pB;
                   exit;
                 end;
               end
@@ -245,11 +245,11 @@ begin
   end;
 end;
 
-function PointIsInArea(tmpPoint: TPoint): boolean;
+function PointIsInArea(p: TPoint): boolean;
 begin
   result := true;
-  if (tmpPoint.x < 0) or (tmpPoint.x > (x - 1)) or (tmpPoint.y < 0) or
-    (tmpPoint.y > (y - 1)) then
+  if (p.x < 0) or (p.x > (x - 1)) or (p.y < 0) or
+    (p.y > (y - 1)) then
     result := false;
 end;
 
@@ -260,256 +260,256 @@ begin
     result := true;
 end;
 
-function PointIsAvailable(tmpPoint: TPoint): boolean;
+function PointIsAvailable(p: TPoint): boolean;
 begin
   result := true;
-  if data[tmpPoint.x, tmpPoint.y] <> 0 then
+  if data[p.x, p.y] <> 0 then
     result := false;
 end;
 
-function BuildUpLine(tmpPoint: TPoint; var tmpLine: TLine;
-  var tmpLineLen: integer; tmpB: TPoint): boolean;
+function BuildUpLine(point: TPoint; var line: TLine;
+  var lineLen: integer; pointB: TPoint): boolean;
 var
-  tempPoint: TPoint;
+  p: TPoint;
   i: integer;
 begin
   result := false;
-  for i := tmpPoint.y - 1 downto 0 do
+  for i := point.y - 1 downto 0 do
   begin
-    tempPoint.x := tmpPoint.x;
-    tempPoint.y := i;
-    if PointEqualToPoint(tempPoint, tmpB) then
+    p.x := point.x;
+    p.y := i;
+    if PointEqualToPoint(p, pointB) then
     begin
       result := true;
       break;
     end;
-    if PointIsAvailable(tempPoint) then
+    if PointIsAvailable(p) then
     begin
-      tmpLine[tmpLineLen] := tempPoint;
-      inc(tmpLineLen);
+      line[lineLen] := p;
+      inc(lineLen);
     end
     else
       break;
   end;
 end;
 
-function BuildRightLine(tmpPoint: TPoint; var tmpLine: TLine;
-  var tmpLineLen: integer; tmpB: TPoint): boolean;
+function BuildRightLine(point: TPoint; var line: TLine;
+  var lineLen: integer; pointB: TPoint): boolean;
 var
-  tempPoint: TPoint;
+  p: TPoint;
   i: integer;
 begin
   result := false;
-  for i := tmpPoint.x + 1 to x - 1 do
+  for i := point.x + 1 to x - 1 do
   begin
-    tempPoint.x := i;
-    tempPoint.y := tmpPoint.y;
-    if PointEqualToPoint(tempPoint, tmpB) then
+    p.x := i;
+    p.y := point.y;
+    if PointEqualToPoint(p, pointB) then
     begin
       result := true;
       break;
     end;
-    if PointIsAvailable(tempPoint) then
+    if PointIsAvailable(p) then
     begin
-      tmpLine[tmpLineLen] := tempPoint;
-      inc(tmpLineLen);
+      line[lineLen] := p;
+      inc(lineLen);
     end
     else
       break;
   end;
 end;
 
-function BuildDownLine(tmpPoint: TPoint; var tmpLine: TLine;
-  var tmpLineLen: integer; tmpB: TPoint): boolean;
+function BuildDownLine(point: TPoint; var line: TLine;
+  var lineLen: integer; pB: TPoint): boolean;
 var
-  tempPoint: TPoint;
+  p: TPoint;
   i: integer;
 begin
   result := false;
-  for i := tmpPoint.y + 1 to y - 1 do
+  for i := point.y + 1 to y - 1 do
   begin
-    tempPoint.x := tmpPoint.x;
-    tempPoint.y := i;
-    if PointEqualToPoint(tempPoint, tmpB) then
+    p.x := point.x;
+    p.y := i;
+    if PointEqualToPoint(p, pB) then
     begin
       result := true;
       break;
     end;
-    if PointIsAvailable(tempPoint) then
+    if PointIsAvailable(p) then
     begin
-      tmpLine[tmpLineLen] := tempPoint;
-      inc(tmpLineLen);
+      line[lineLen] := p;
+      inc(lineLen);
     end
     else
       break;
   end;
 end;
 
-function BuildLeftLine(tmpPoint: TPoint; var tmpLine: TLine;
-  var tmpLineLen: integer; tmpB: TPoint): boolean;
+function BuildLeftLine(point: TPoint; var line: TLine;
+  var lineLen: integer; pB: TPoint): boolean;
 var
-  tempPoint: TPoint;
+  p: TPoint;
   i: integer;
 begin
   result := false;
-  for i := tmpPoint.x - 1 downto 0 do
+  for i := point.x - 1 downto 0 do
   begin
-    tempPoint.x := i;
-    tempPoint.y := tmpPoint.y;
-    if PointEqualToPoint(tempPoint, tmpB) then
+    p.x := i;
+    p.y := point.y;
+    if PointEqualToPoint(p, pB) then
     begin
       result := true;
       break;
     end;
-    if PointIsAvailable(tempPoint) then
+    if PointIsAvailable(p) then
     begin
-      tmpLine[tmpLineLen] := tempPoint;
-      inc(tmpLineLen);
+      line[lineLen] := p;
+      inc(lineLen);
     end
     else
       break;
   end;
 end;
 
-function LineNotEmpty(tmpLine: TLine; tmpLineLen: integer): boolean;
+function LineNotEmpty(line: TLine; lineLen: integer): boolean;
 begin
   result := true;
-  if tmpLineLen = 1 then
+  if lineLen = 1 then
     result := false;
 end;
 
-function LineIntersectLine(tmpLineA, tmpLineB: TLine;
-  tmpLineALen, tmpLineBLen: integer; var tmpPoint: TPoint): boolean;
+function LineIntersectLine(lineA, lineB: TLine;
+  lineALen, lineBLen: integer; var point: TPoint): boolean;
 var
   i, j: integer;
 begin
   result := false;
-  tmpPoint.x := -1;
-  tmpPoint.y := -1;
-  for i := 1 to tmpLineALen - 1 do
-    for j := 1 to tmpLineBLen - 1 do
+  point.x := -1;
+  point.y := -1;
+  for i := 1 to lineALen - 1 do
+    for j := 1 to lineBLen - 1 do
     begin
-      if PointEqualToPoint(tmpLineA[i], tmpLineB[j]) then
+      if PointEqualToPoint(lineA[i], lineB[j]) then
       begin
-        tmpPoint := tmpLineA[i];
+        point := lineA[i];
         result := true;
         exit;
       end;
     end;
 end;
 
-procedure InitLine(var tmpLine: TLine; var tmpLineLen: integer);
+procedure InitLine(var line: TLine; var lineLen: integer);
 var
   i: integer;
-  tmpZero: TPoint;
+  pZero: TPoint;
 begin
-  tmpZero.x := 0;
-  tmpZero.y := 0;
-  tmpLineLen := 1;
+  pZero.x := 0;
+  pZero.y := 0;
+  lineLen := 1;
   for i := 1 to MAX do
-    tmpLine[i] := tmpZero;
+    line[i] := pZero;
 end;
 
-function HaveLineBetweenLineAndLineHorizon(tmpLineA, tmpLineB: TLine;
-  tmpLineALen, tmpLineBLen: integer; var tmpThirdLine: TLine): boolean;
+function HaveLineBetweenLineAndLineHorizon(lineA, lineB: TLine;
+  lineALen, lineBLen: integer; var lineThird: TLine): boolean;
 var
-  tmpLine, tmpUpLine, tmpDownLine: TLine;
-  tmpLineLen, tmpUpLineLen, tmpDownLineLen, i, j: integer;
-  tmpPoint: TPoint;
+  line, lineUp, lineDown: TLine;
+  lineLen, lineUpLen, lineDownLen, i, j: integer;
+  p: TPoint;
 begin
   result := false;
-  for i := 1 to tmpLineALen - 1 do
+  for i := 1 to lineALen - 1 do
   begin
-    tmpUpLineLen := 1;
-    for j := tmpLineA[i].y downto 0 do
+    lineUpLen := 1;
+    for j := lineA[i].y downto 0 do
     begin
-      tmpPoint.x := tmpLineA[i].x;
-      tmpPoint.y := j;
-      if PointIsInArea(tmpPoint) and PointIsAvailable(tmpPoint) then
+      p.x := lineA[i].x;
+      p.y := j;
+      if PointIsInArea(p) and PointIsAvailable(p) then
       begin
-        tmpUpLine[tmpUpLineLen] := tmpPoint;
-        inc(tmpUpLineLen);
+        lineUp[lineUpLen] := p;
+        inc(lineUpLen);
       end
       else
         break;
     end;
-    tmpDownLineLen := 1;
-    for j := tmpLineA[i].y + 1 to y - 1 do
+    lineDownLen := 1;
+    for j := lineA[i].y + 1 to y - 1 do
     begin
-      tmpPoint.x := tmpLineA[i].x;
-      tmpPoint.y := j;
-      if PointIsInArea(tmpPoint) and PointIsAvailable(tmpPoint) then
+      p.x := lineA[i].x;
+      p.y := j;
+      if PointIsInArea(p) and PointIsAvailable(p) then
       begin
-        tmpDownLine[tmpDownLineLen] := tmpPoint;
-        inc(tmpDownLineLen);
+        lineDown[lineDownLen] := p;
+        inc(lineDownLen);
       end
       else
         break;
     end;
-    for j := 1 to tmpUpLineLen - 1 do
-      tmpLine[j] := tmpUpLine[j];
-    for j := tmpUpLineLen to tmpUpLineLen + tmpDownLineLen - 1 do
-      tmpLine[j] := tmpDownLine[j - tmpUpLineLen + 1];
-    tmpLineLen := tmpUpLineLen + tmpDownLineLen - 1;
-    if LineIntersectLine(tmpLine, tmpLineB, tmpLineLen, tmpLineBLen, tmpPoint)
+    for j := 1 to lineUpLen - 1 do
+      line[j] := lineUp[j];
+    for j := lineUpLen to lineUpLen + lineDownLen - 1 do
+      line[j] := lineDown[j - lineUpLen + 1];
+    lineLen := lineUpLen + lineDownLen - 1;
+    if LineIntersectLine(line, lineB, lineLen, lineBLen, p)
     then
     begin
-      ShareLine[3] := tmpPoint;
-      LineIntersectLine(tmpLine, tmpLineA, tmpLineLen, tmpLineALen, tmpPoint);
-      ShareLine[4] := tmpPoint;
+      ShareLine[3] := p;
+      LineIntersectLine(line, lineA, lineLen, lineALen, p);
+      ShareLine[4] := p;
       result := true;
       exit;
     end;
   end;
 end;
 
-function HaveLineBetweenLineAndLineVertical(tmpLineA, tmpLineB: TLine;
-  tmpLineALen, tmpLineBLen: integer; var tmpThirdLine: TLine): boolean;
+function HaveLineBetweenLineAndLineVertical(lineA, lineB: TLine;
+  lineALen, lineBLen: integer; var lineThird: TLine): boolean;
 var
-  tmpLine, tmpLeftLine, tmpRightLine: TLine;
-  tmpLineLen, tmpLeftLineLen, tmpRightLineLen, i, j: integer;
-  tmpPoint: TPoint;
+  line, lineLeft, lineRight: TLine;
+  lineLen, lineLeftLen, lineRightLen, i, j: integer;
+  p: TPoint;
 begin
   result := false;
-  for i := 1 to tmpLineALen - 1 do
+  for i := 1 to lineALen - 1 do
   begin
-    tmpLeftLineLen := 1;
-    for j := tmpLineA[i].x downto 0 do
+    lineLeftLen := 1;
+    for j := lineA[i].x downto 0 do
     begin
-      tmpPoint.x := j;
-      tmpPoint.y := tmpLineA[i].y;
-      if PointIsInArea(tmpPoint) and PointIsAvailable(tmpPoint) then
+      p.x := j;
+      p.y := lineA[i].y;
+      if PointIsInArea(p) and PointIsAvailable(p) then
       begin
-        tmpLeftLine[tmpLeftLineLen] := tmpPoint;
-        inc(tmpLeftLineLen);
+        lineLeft[lineLeftLen] := p;
+        inc(lineLeftLen);
       end
       else
         break;
     end;
-    tmpRightLineLen := 1;
-    for j := tmpLineA[i].x + 1 to x - 1 do
+    lineRightLen := 1;
+    for j := lineA[i].x + 1 to x - 1 do
     begin
-      tmpPoint.x := j;
-      tmpPoint.y := tmpLineA[i].y;
-      if PointIsInArea(tmpPoint) and PointIsAvailable(tmpPoint) then
+      p.x := j;
+      p.y := lineA[i].y;
+      if PointIsInArea(p) and PointIsAvailable(p) then
       begin
-        tmpRightLine[tmpRightLineLen] := tmpPoint;
-        inc(tmpRightLineLen);
+        lineRight[lineRightLen] := p;
+        inc(lineRightLen);
       end
       else
         break;
     end;
-    for j := 1 to tmpLeftLineLen - 1 do
-      tmpLine[j] := tmpLeftLine[j];
-    for j := tmpLeftLineLen to tmpLeftLineLen + tmpRightLineLen - 1 do
-      tmpLine[j] := tmpRightLine[j - tmpLeftLineLen + 1];
-    tmpLineLen := tmpLeftLineLen + tmpRightLineLen - 1;
-    if LineIntersectLine(tmpLine, tmpLineB, tmpLineLen, tmpLineBLen, tmpPoint)
+    for j := 1 to lineLeftLen - 1 do
+      line[j] := lineLeft[j];
+    for j := lineLeftLen to lineLeftLen + lineRightLen - 1 do
+      line[j] := lineRight[j - lineLeftLen + 1];
+    lineLen := lineLeftLen + lineRightLen - 1;
+    if LineIntersectLine(line, lineB, lineLen, lineBLen, p)
     then
     begin
-      ShareLine[3] := tmpPoint;
-      LineIntersectLine(tmpLine, tmpLineA, tmpLineLen, tmpLineALen, tmpPoint);
-      ShareLine[4] := tmpPoint;
+      ShareLine[3] := p;
+      LineIntersectLine(line, lineA, lineLen, lineALen, p);
+      ShareLine[4] := p;
       result := true;
       exit;
     end;
@@ -615,365 +615,365 @@ begin
   end;
 end;
 
-function ReArrangeData(tmpType: TArrangeType): boolean;
+function ReArrangeData(t: TArrangeType): boolean;
 var
-  i, j, tmpI, tmpJ, StartX, StartY, EndX, EndY: integer;
+  i, j, m, n, StartX, StartY, EndX, EndY: integer;
 begin
   result := true;
   StartX := 1;
   StartY := 1;
   EndX := x - 2;
   EndY := y - 2;
-  if tmpType = ARRANGETYPE0 then // µÚ£°¹Ø ²»±ä»¯
+  if t = ARRANGETYPE0 then // ç¬¬ï¼å…³ ä¸å˜åŒ–
     exit
-  else if tmpType = ARRANGETYPE1 then // µÚ£±¹Ø ÏòÏÂ
+  else if t = ARRANGETYPE1 then // ç¬¬ï¼‘å…³ å‘ä¸‹
   begin
     for j := EndY downto StartY do
       for i := StartX to EndX do
       begin
         if data[i, j] = 0 then
         begin
-          for tmpJ := j - 1 downto StartY do
-            if data[i, tmpJ] <> 0 then
+          for n := j - 1 downto StartY do
+            if data[i, n] <> 0 then
             begin
-              data[i, j] := data[i, tmpJ];
-              data[i, tmpJ] := 0;
+              data[i, j] := data[i, n];
+              data[i, n] := 0;
               break;
             end;
         end;
       end;
   end
-  else if tmpType = ARRANGETYPE2 then // µÚ£²¹Ø Ïò×ó
+  else if t = ARRANGETYPE2 then // ç¬¬ï¼’å…³ å‘å·¦
   begin
     for i := StartX to EndX do
       for j := StartY to EndY do
       begin
         if data[i, j] = 0 then
         begin
-          for tmpI := i + 1 to EndX do
-            if data[tmpI, j] <> 0 then
+          for m := i + 1 to EndX do
+            if data[m, j] <> 0 then
             begin
-              data[i, j] := data[tmpI, j];
-              data[tmpI, j] := 0;
+              data[i, j] := data[m, j];
+              data[m, j] := 0;
               break;
             end;
         end;
       end;
   end
-  else if tmpType = ARRANGETYPE3 then // µÚ£³¹Ø ÉÏÏÂ·ÖÀë
+  else if t = ARRANGETYPE3 then // ç¬¬ï¼“å…³ ä¸Šä¸‹åˆ†ç¦»
   begin
-    // µÚÒ»²½ÉÏ°ë²¿·ÖÏòÉÏ
+    // ç¬¬ä¸€æ­¥ä¸ŠåŠéƒ¨åˆ†å‘ä¸Š
     for j := StartY to EndY div 2 do
       for i := StartX to EndX do
       begin
         if data[i, j] = 0 then
         begin
-          for tmpJ := j + 1 to EndY div 2 do
+          for n := j + 1 to EndY div 2 do
           begin
-            if data[i, tmpJ] <> 0 then
+            if data[i, n] <> 0 then
             begin
-              data[i, j] := data[i, tmpJ];
-              data[i, tmpJ] := 0;
+              data[i, j] := data[i, n];
+              data[i, n] := 0;
               break;
             end;
           end;
         end;
       end;
-    // µÚ¶ş²½ÏÂ°ë²¿·ÖÏòÏÂ
+    // ç¬¬äºŒæ­¥ä¸‹åŠéƒ¨åˆ†å‘ä¸‹
     for j := EndY downto EndY div 2 + 1 do
       for i := StartX to EndX do
       begin
         if data[i, j] = 0 then
         begin
-          for tmpJ := j - 1 downto EndY div 2 + 1 do
-            if data[i, tmpJ] <> 0 then
+          for n := j - 1 downto EndY div 2 + 1 do
+            if data[i, n] <> 0 then
             begin
-              data[i, j] := data[i, tmpJ];
-              data[i, tmpJ] := 0;
+              data[i, j] := data[i, n];
+              data[i, n] := 0;
               break;
             end;
         end;
       end;
   end
-  else if tmpType = ARRANGETYPE4 then // µÚ£´¹Ø ×óÓÒ·ÖÀë
+  else if t = ARRANGETYPE4 then // ç¬¬ï¼”å…³ å·¦å³åˆ†ç¦»
   begin
-    // µÚÒ»²½×ó°ë²¿·ÖÏò×ó
+    // ç¬¬ä¸€æ­¥å·¦åŠéƒ¨åˆ†å‘å·¦
     for i := StartX to EndX div 2 do
       for j := StartY to EndY do
       begin
         if data[i, j] = 0 then
         begin
-          for tmpI := i + 1 to EndX div 2 do
-            if data[tmpI, j] <> 0 then
+          for m := i + 1 to EndX div 2 do
+            if data[m, j] <> 0 then
             begin
-              data[i, j] := data[tmpI, j];
-              data[tmpI, j] := 0;
+              data[i, j] := data[m, j];
+              data[m, j] := 0;
               break;
             end;
         end;
       end;
-    // µÚ¶ş²½ÓÒ°ë²¿·ÖÏòÓÒ
+    // ç¬¬äºŒæ­¥å³åŠéƒ¨åˆ†å‘å³
     for i := EndX downto EndX div 2 + 1 do
       for j := StartY to EndY do
       begin
         if data[i, j] = 0 then
         begin
-          for tmpI := i - 1 downto EndX div 2 + 1 do
-            if data[tmpI, j] <> 0 then
+          for m := i - 1 downto EndX div 2 + 1 do
+            if data[m, j] <> 0 then
             begin
-              data[i, j] := data[tmpI, j];
-              data[tmpI, j] := 0;
+              data[i, j] := data[m, j];
+              data[m, j] := 0;
               break;
             end;
         end;
       end;
   end
-  else if tmpType = ARRANGETYPE5 then // µÚ£µ¹Ø ÉÏÏÂ¼¯ÖĞ
+  else if t = ARRANGETYPE5 then // ç¬¬ï¼•å…³ ä¸Šä¸‹é›†ä¸­
   begin
-    // µÚÒ»²½ÉÏ°ë²¿·ÖÏòÖĞ¼¯ÖĞ
+    // ç¬¬ä¸€æ­¥ä¸ŠåŠéƒ¨åˆ†å‘ä¸­é›†ä¸­
     for i := StartX to EndX do
       for j := EndY div 2 downto StartY do
       begin
         if data[i, j] = 0 then
         begin
-          for tmpJ := j - 1 downto StartY do
-            if data[i, tmpJ] <> 0 then
+          for n := j - 1 downto StartY do
+            if data[i, n] <> 0 then
             begin
-              data[i, j] := data[i, tmpJ];
-              data[i, tmpJ] := 0;
+              data[i, j] := data[i, n];
+              data[i, n] := 0;
               break;
             end;
         end;
       end;
-    // µÚ¶ş²½ÏÂ°ë²¿·ÖÏòÖĞ¼¯ÖĞ
+    // ç¬¬äºŒæ­¥ä¸‹åŠéƒ¨åˆ†å‘ä¸­é›†ä¸­
     for i := StartX to EndX do
       for j := EndY div 2 + 1 to EndY do
       begin
         if data[i, j] = 0 then
         begin
-          for tmpJ := j + 1 to EndY do
-            if data[i, tmpJ] <> 0 then
+          for n := j + 1 to EndY do
+            if data[i, n] <> 0 then
             begin
-              data[i, j] := data[i, tmpJ];
-              data[i, tmpJ] := 0;
+              data[i, j] := data[i, n];
+              data[i, n] := 0;
               break;
             end;
         end;
       end;
   end
-  else if tmpType = ARRANGETYPE6 then // µÚ£¶¹Ø ×óÓÒ¼¯ÖĞ
+  else if t = ARRANGETYPE6 then // ç¬¬ï¼–å…³ å·¦å³é›†ä¸­
   begin
-    // µÚÒ»²½×ó°ë²¿·ÖÏòÖĞ¼¯ÖĞ
+    // ç¬¬ä¸€æ­¥å·¦åŠéƒ¨åˆ†å‘ä¸­é›†ä¸­
     for i := EndX div 2 downto StartX do
       for j := StartY to EndY do
       begin
         if data[i, j] = 0 then
         begin
-          for tmpI := i - 1 downto StartX do
-            if data[tmpI, j] <> 0 then
+          for m := i - 1 downto StartX do
+            if data[m, j] <> 0 then
             begin
-              data[i, j] := data[tmpI, j];
-              data[tmpI, j] := 0;
+              data[i, j] := data[m, j];
+              data[m, j] := 0;
               break;
             end;
         end;
       end;
-    // µÚ¶ş²½ÓÒ°ë²¿·ÖÏòÖĞ¼¯ÖĞ
+    // ç¬¬äºŒæ­¥å³åŠéƒ¨åˆ†å‘ä¸­é›†ä¸­
     for i := EndX div 2 + 1 to EndX do
       for j := StartY to EndY do
       begin
         if data[i, j] = 0 then
         begin
-          for tmpI := i + 1 to EndX do
-            if data[tmpI, j] <> 0 then
+          for m := i + 1 to EndX do
+            if data[m, j] <> 0 then
             begin
-              data[i, j] := data[tmpI, j];
-              data[tmpI, j] := 0;
+              data[i, j] := data[m, j];
+              data[m, j] := 0;
               break;
             end;
         end;
       end;
   end
-  else if tmpType = ARRANGETYPE7 then // µÚ£·¹Ø ÉÏ×óÏÂÓÒ
+  else if t = ARRANGETYPE7 then // ç¬¬ï¼—å…³ ä¸Šå·¦ä¸‹å³
   begin
-    // µÚÒ»²½ÉÏ°ë²¿·ÖÏò×ó¼¯ÖĞ
+    // ç¬¬ä¸€æ­¥ä¸ŠåŠéƒ¨åˆ†å‘å·¦é›†ä¸­
     for i := StartX to EndX do
       for j := StartY to EndY div 2 do
       begin
         if data[i, j] = 0 then
         begin
-          for tmpI := i + 1 to EndX do
-            if data[tmpI, j] <> 0 then
+          for m := i + 1 to EndX do
+            if data[m, j] <> 0 then
             begin
-              data[i, j] := data[tmpI, j];
-              data[tmpI, j] := 0;
+              data[i, j] := data[m, j];
+              data[m, j] := 0;
               break;
             end;
         end;
       end;
 
-    // µÚ¶ş²½ÉÏ°ë²¿·ÖÏòÉÏ¼¯ÖĞ
+    // ç¬¬äºŒæ­¥ä¸ŠåŠéƒ¨åˆ†å‘ä¸Šé›†ä¸­
     for j := StartY to EndY div 2 do
       for i := StartX to EndX do
       begin
         if data[i, j] = 0 then
         begin
-          for tmpJ := j + 1 to EndY div 2 do
-            if data[i, tmpJ] <> 0 then
+          for n := j + 1 to EndY div 2 do
+            if data[i, n] <> 0 then
             begin
-              data[i, j] := data[i, tmpJ];
-              data[i, tmpJ] := 0;
+              data[i, j] := data[i, n];
+              data[i, n] := 0;
               break;
             end;
         end;
       end;
 
-    // µÚÈı²½ÏÂ°ë²¿·ÖÏòÓÒ¼¯ÖĞ
+    // ç¬¬ä¸‰æ­¥ä¸‹åŠéƒ¨åˆ†å‘å³é›†ä¸­
     for i := EndX downto StartX do
       for j := (EndY div 2 + 1) to EndY do
       begin
         if data[i, j] = 0 then
         begin
-          for tmpI := (i - 1) downto StartX do
-            if data[tmpI, j] <> 0 then
+          for m := (i - 1) downto StartX do
+            if data[m, j] <> 0 then
             begin
-              data[i, j] := data[tmpI, j];
-              data[tmpI, j] := 0;
+              data[i, j] := data[m, j];
+              data[m, j] := 0;
               break;
             end;
         end;
       end;
 
-    // µÚËÄ²½ÏÂ°ë²¿·ÖÏòÏÂ¼¯ÖĞ
+    // ç¬¬å››æ­¥ä¸‹åŠéƒ¨åˆ†å‘ä¸‹é›†ä¸­
     for j := EndY downto (EndY div 2 + 1) do
       for i := EndX downto StartX do
       begin
         if data[i, j] = 0 then
         begin
-          for tmpJ := (j - 1) downto (EndY div 2 + 1) do
-            if data[i, tmpJ] <> 0 then
+          for n := (j - 1) downto (EndY div 2 + 1) do
+            if data[i, n] <> 0 then
             begin
-              data[i, j] := data[i, tmpJ];
-              data[i, tmpJ] := 0;
+              data[i, j] := data[i, n];
+              data[i, n] := 0;
               break;
             end;
         end;
       end;
   end
-  else if tmpType = ARRANGETYPE8 then // µÚ£¸¹Ø ×óÏÂÓÒÉÏ
+  else if t = ARRANGETYPE8 then // ç¬¬ï¼˜å…³ å·¦ä¸‹å³ä¸Š
   begin
-    // µÚÒ»²½×ó°ë²¿·ÖÏò×ó¼¯ÖĞ
+    // ç¬¬ä¸€æ­¥å·¦åŠéƒ¨åˆ†å‘å·¦é›†ä¸­
     for i := StartX to EndX div 2 do
       for j := StartY to EndY do
       begin
         if data[i, j] = 0 then
         begin
-          for tmpI := i + 1 to EndX div 2 do
-            if data[tmpI, j] <> 0 then
+          for m := i + 1 to EndX div 2 do
+            if data[m, j] <> 0 then
             begin
-              data[i, j] := data[tmpI, j];
-              data[tmpI, j] := 0;
+              data[i, j] := data[m, j];
+              data[m, j] := 0;
               break;
             end;
         end;
       end;
-    // µÚ¶ş²½×ó°ë²¿·ÖÏòÏÂ¼¯ÖĞ
+    // ç¬¬äºŒæ­¥å·¦åŠéƒ¨åˆ†å‘ä¸‹é›†ä¸­
     for j := EndY downto StartY do
       for i := StartX to EndX div 2 do
       begin
         if data[i, j] = 0 then
         begin
-          for tmpJ := j - 1 downto StartY do
-            if data[i, tmpJ] <> 0 then
+          for n := j - 1 downto StartY do
+            if data[i, n] <> 0 then
             begin
-              data[i, j] := data[i, tmpJ];
-              data[i, tmpJ] := 0;
+              data[i, j] := data[i, n];
+              data[i, n] := 0;
               break;
             end;
         end;
       end;
-    // µÚÈı²½ÓÒ°ë²¿·ÖÏòÓÒ¼¯ÖĞ
+    // ç¬¬ä¸‰æ­¥å³åŠéƒ¨åˆ†å‘å³é›†ä¸­
     for i := EndX downto EndX div 2 + 1 do
       for j := StartY to EndY do
       begin
         if data[i, j] = 0 then
         begin
-          for tmpI := i - 1 downto EndX div 2 + 1 do
-            if data[tmpI, j] <> 0 then
+          for m := i - 1 downto EndX div 2 + 1 do
+            if data[m, j] <> 0 then
             begin
-              data[i, j] := data[tmpI, j];
-              data[tmpI, j] := 0;
+              data[i, j] := data[m, j];
+              data[m, j] := 0;
               break;
             end;
         end;
       end;
-    // µÚËÄ²½ÓÒ°ë²¿·ÖÏòÉÏ¼¯ÖĞ
+    // ç¬¬å››æ­¥å³åŠéƒ¨åˆ†å‘ä¸Šé›†ä¸­
     for j := StartY to EndY do
       for i := EndX downto EndX div 2 + 1 do
       begin
         if data[i, j] = 0 then
         begin
-          for tmpJ := j + 1 to EndY do
-            if data[i, tmpJ] <> 0 then
+          for n := j + 1 to EndY do
+            if data[i, n] <> 0 then
             begin
-              data[i, j] := data[i, tmpJ];
-              data[i, tmpJ] := 0;
+              data[i, j] := data[i, n];
+              data[i, n] := 0;
               break;
             end;
         end;
       end;
   end
-  else if tmpType = ARRANGETYPE9 then // µÚ£¹¹Ø ÏòÍâÀ©É¢
+  else if t = ARRANGETYPE9 then // ç¬¬ï¼™å…³ å‘å¤–æ‰©æ•£
   begin
     ReArrangeData(ARRANGETYPE3);
     ReArrangeData(ARRANGETYPE4);
   end
-  else if tmpType = ARRANGETYPE10 then // µÚ£±£°¹Ø ÏòÄÚ¼¯ÖĞ
+  else if t = ARRANGETYPE10 then // ç¬¬ï¼‘ï¼å…³ å‘å†…é›†ä¸­
   begin
     ReArrangeData(ARRANGETYPE5);
     ReArrangeData(ARRANGETYPE6);
   end;
 end;
 
-function GetStringFromArrangeType(tmpType: TArrangeType): string;
+function GetStringFromArrangeType(t: TArrangeType): string;
 begin
-  case tmpType of
+  case t of
     ARRANGETYPE0:
-      result := '²»±ä»¯';
+      result := 'ä¸å˜åŒ–';
     ARRANGETYPE1:
-      result := 'ÏòÏÂ';
+      result := 'å‘ä¸‹';
     ARRANGETYPE2:
-      result := 'Ïò×ó';
+      result := 'å‘å·¦';
     ARRANGETYPE3:
-      result := 'ÉÏÏÂ·ÖÀë';
+      result := 'ä¸Šä¸‹åˆ†ç¦»';
     ARRANGETYPE4:
-      result := '×óÓÒ·ÖÀë';
+      result := 'å·¦å³åˆ†ç¦»';
     ARRANGETYPE5:
-      result := 'ÉÏÏÂ¼¯ÖĞ';
+      result := 'ä¸Šä¸‹é›†ä¸­';
     ARRANGETYPE6:
-      result := '×óÓÒ¼¯ÖĞ';
+      result := 'å·¦å³é›†ä¸­';
     ARRANGETYPE7:
-      result := 'ÉÏ×óÏÂÓÒ';
+      result := 'ä¸Šå·¦ä¸‹å³';
     ARRANGETYPE8:
-      result := '×óÏÂÓÒÉÏ';
+      result := 'å·¦ä¸‹å³ä¸Š';
     ARRANGETYPE9:
-      result := 'ÏòÍâÀ©É¢';
+      result := 'å‘å¤–æ‰©æ•£';
     ARRANGETYPE10:
-      result := 'ÏòÄÚ¼¯ÖĞ';
+      result := 'å‘å†…é›†ä¸­';
   end;
 end;
 
-function GetStringFromGameLevel(tmpLevel: TGameLevel): string;
+function GetStringFromGameLevel(lv: TGameLevel): string;
 begin
-  case tmpLevel of
+  case lv of
     GAMELEVELLOW:
-      result := '³õ¼¶';
+      result := 'åˆçº§';
     GAMELEVELMEDIUM:
-      result := 'ÖĞ¼¶';
+      result := 'ä¸­çº§';
     GAMELEVELHIGH:
-      result := '¸ß¼¶';
+      result := 'é«˜çº§';
     GAMELEVELSPECIAL:
-      result := 'ÌØ¼¶';
+      result := 'ç‰¹çº§';
   end;
 end;
 
