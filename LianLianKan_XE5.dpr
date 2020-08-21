@@ -2,10 +2,10 @@ program LianLianKan_XE5;
 
 uses
   Forms,
-  UnitMain in 'UnitMain.pas' {MainForm} ,
-  UnitData in 'UnitData.pas',
-  UnitStack in 'UnitStack.pas',
-  UnitShare in 'UnitShare.pas';
+  main in 'main.pas' {MainForm},
+  common in 'common.pas',
+  stack in 'stack.pas',
+  share in 'share.pas';
 
 {$R *.res}
 

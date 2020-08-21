@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+  <Transactions>
+    <Transaction>2020/08/22 02:30:19.357,C:\Documents and Settings\wangxinghe\My Documents\Programs\Delphi\Game\LianLianKan\data.pas=C:\Documents and Settings\wangxinghe\My Documents\Programs\Delphi\Game\LianLianKan\UnitData.pas</Transaction>
+    <Transaction>2020/08/22 02:30:23.136,C:\Documents and Settings\wangxinghe\My Documents\Programs\Delphi\Game\LianLianKan\main.pas=C:\Documents and Settings\wangxinghe\My Documents\Programs\Delphi\Game\LianLianKan\UnitMain.pas</Transaction>
+    <Transaction>2020/08/22 02:30:23.136,C:\Documents and Settings\wangxinghe\My Documents\Programs\Delphi\Game\LianLianKan\main.dfm=C:\Documents and Settings\wangxinghe\My Documents\Programs\Delphi\Game\LianLianKan\UnitMain.dfm</Transaction>
+    <Transaction>2020/08/22 02:30:27.034,C:\Documents and Settings\wangxinghe\My Documents\Programs\Delphi\Game\LianLianKan\share.pas=C:\Documents and Settings\wangxinghe\My Documents\Programs\Delphi\Game\LianLianKan\UnitShare.pas</Transaction>
+    <Transaction>2020/08/22 02:30:30.935,C:\Documents and Settings\wangxinghe\My Documents\Programs\Delphi\Game\LianLianKan\stack.pas=C:\Documents and Settings\wangxinghe\My Documents\Programs\Delphi\Game\LianLianKan\UnitStack.pas</Transaction>
+    <Transaction>2020/08/22 02:32:23.407,C:\Documents and Settings\wangxinghe\My Documents\Programs\Delphi\Game\LianLianKan\common.pas=C:\Documents and Settings\wangxinghe\My Documents\Programs\Delphi\Game\LianLianKan\data.pas</Transaction>
+  </Transactions>
+</BorlandProject>

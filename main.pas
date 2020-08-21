@@ -1,4 +1,4 @@
-unit UnitMain;
+unit main;
 
 {
   CONTACT: WANGXINGHE1983@GMAIL.COM
@@ -8,8 +8,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, Menus, ComCtrls, ExtCtrls, StdCtrls, MPlayer, UnitData, UnitShare,
-  UnitStack, MMSystem,
+  Dialogs, Menus, ComCtrls, ExtCtrls, StdCtrls, MPlayer, Common, Share,
+  Stack, MMSystem,
   AppEvnts;
 
 type

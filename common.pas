@@ -1,9 +1,9 @@
-﻿unit UnitData;
+﻿unit common;
 
 interface
 
 uses
-  UnitShare, UnitStack, Dialogs;
+  share, stack, Dialogs;
 
 const
   MAX = 100;

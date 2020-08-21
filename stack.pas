@@ -1,18 +1,18 @@
-unit UnitStack;
+unit stack;
 
 interface
 
 uses
-  UnitShare;
+  share;
 
 const
   STACKLEN = 10;
 
 type
-  Stack = array [1 .. STACKLEN] of TPoint;
+  TStack = array [1 .. STACKLEN] of TPoint;
 
 var
-  MyStack: Stack;
+  MyStack: TStack;
   StackFlag: integer;
 
 procedure InitStack();
