@@ -63,8 +63,7 @@ type
     procedure MenuGameLowClick(Sender: TObject);
     procedure MenuGameMediumClick(Sender: TObject);
     procedure MenuGameHighClick(Sender: TObject);
-    procedure MainPaintBoxMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
+    procedure MainPaintBoxMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure FormCreate(Sender: TObject);
     procedure MainPaintBoxPaint(Sender: TObject);
     procedure FormResize(Sender: TObject);
@@ -110,8 +109,8 @@ type
     procedure Dark(i, j: Integer);
     procedure GetBitmap(var tmpBitmap: TBitmap; tmpNum: Integer);
     procedure DrawLine(line: TLine; num: Integer; flag: boolean);
-    procedure SetSelected(x, y: Integer);
-    procedure ResetSelected(x, y: Integer);
+    procedure SetSelected(X, Y: Integer);
+    procedure ResetSelected(X, Y: Integer);
     function GetMusic(): string;
     procedure PlaySound(sound: string);
     procedure DrawGameTime();
@@ -128,18 +127,18 @@ implementation
 {$R *.dfm}
 
 const
-  OPACITY = 140;
-  SELECTEDNUM = 0;
-  SLEEPTIME = 200;
-  MUSICNUM = 15;
-  BITMAPNUM = 25;
-  COLORNUM = 15;
-  RESOURCEPATH = '.\资源';
-  TEXTSTART = 50;
-  TOTALTIME = 100;
-  TEXTSPACE = 70;
-  TEXTHEIGHT = 10;
-  GAMETIMESPACE = 50;
+  C_OPACITY = 140;
+  C_SELECTEDNUM = 0;
+  C_SLEEPTIME = 200;
+  C_MUSICNUM = 15;
+  C_BITMAPNUM = 25;
+  C_COLORNUM = 15;
+  C_RESOURCEPATH = '.\资源';
+  C_TEXTSTART = 50;
+  C_TOTALTIME = 100;
+  C_TEXTSPACE = 70;
+  C_TEXTHEIGHT = 10;
+  C_GAMETIMESPACE = 50;
 
 var
   GBitMap: TBitmap = nil;
@@ -154,7 +153,7 @@ var
   GBackGroundImage: TImage = nil;
   GLife: Integer = 2;
   GHint: Integer = 4;
-  GTime: Integer = TOTALTIME;
+  GTime: Integer = C_TOTALTIME;
   GModeDebug: boolean = false;
 
 procedure TMainForm.MenuAutoPlayClick(Sender: TObject);
@@ -168,18 +167,21 @@ end;
 procedure TMainForm.MenuGameAbandonClick(Sender: TObject);
 begin
   GGameRunning := false;
-  MainForm.MenuGameAbandon.Enabled := false;
-  MainForm.MenuOptionGetHint.Enabled := false;
-  MainForm.MenuOptionRearrange.Enabled := false;
-  MainForm.MenuOptionBackGround.Enabled := false;
-  MainForm.MenuOptionSound.Enabled := false;
-  MainForm.MenuOptionBitmap.Enabled := false;
-  MainForm.MenuChange.Enabled := false;
-  MainForm.MenuAutoPlay.Enabled := false;
-  MainForm.MenuGameLow.Enabled := true;
-  MainForm.MenuGameMedium.Enabled := true;
-  MainForm.MenuGameHigh.Enabled := true;
-  MainForm.MenuGameSpecial.Enabled := true;
+  with MainForm do
+  begin
+    MenuGameAbandon.Enabled := false;
+    MenuOptionGetHint.Enabled := false;
+    MenuOptionRearrange.Enabled := false;
+    MenuOptionBackGround.Enabled := false;
+    MenuOptionSound.Enabled := false;
+    MenuOptionBitmap.Enabled := false;
+    MenuChange.Enabled := false;
+    MenuAutoPlay.Enabled := false;
+    MenuGameLow.Enabled := true;
+    MenuGameMedium.Enabled := true;
+    MenuGameHigh.Enabled := true;
+    MenuGameSpecial.Enabled := true;
+  end;
   TimerGameDelay.Enabled := false;
   MainPaintBoxPaint(Sender);
 end;
@@ -188,8 +190,7 @@ procedure TMainForm.MenuGameAboutClick(Sender: TObject);
 var
   s: string;
 begin
-  s := '名称   - 连连看' + sLineBreak + '开发者 - RICOL' + sLineBreak + '版本   - V4.0' +
-    sLineBreak + '联系   - WANGXINGHE1983@GMAIL.COM';
+  s := '名称   - 连连看' + sLineBreak + '开发者 - RICOL' + sLineBreak + '版本   - V4.0' + sLineBreak + '联系   - WANGXINGHE1983@GMAIL.COM';
   MessageBox(Self.Handle, PChar(s), '关于', MB_OK);
 end;
 
@@ -269,12 +270,11 @@ begin
   if not GGameRunning then
     exit;
   try
-    s := InputBox('输入', '请输入背景颜色编号(1 - ' + IntToStr(COLORNUM) + '): ',
-      IntToStr(GBkGroundNumber));
+    s := InputBox('输入', '请输入背景颜色编号(1 - ' + IntToStr(C_COLORNUM) + '): ', IntToStr(GBkGroundNumber));
   except
     s := IntToStr(GBkGroundNumber);
   end;
-  if (StrToInt(s) < 1) or (StrToInt(s) > COLORNUM) then
+  if (StrToInt(s) < 1) or (StrToInt(s) > C_COLORNUM) then
     s := IntToStr(GBkGroundNumber);
   GBkGroundNumber := StrToInt(s);
   GBackGroundColor := GetColor(GBkGroundNumber);
@@ -289,12 +289,11 @@ begin
   if not GGameRunning then
     exit;
   try
-    s := InputBox('输入', '请输入图案编号(1 - ' + IntToStr(BITMAPNUM) + '): ',
-      IntToStr(GBitMapNumber));
+    s := InputBox('输入', '请输入图案编号(1 - ' + IntToStr(C_BITMAPNUM) + '): ', IntToStr(GBitMapNumber));
   except
     s := IntToStr(GBitMapNumber);
   end;
-  if (StrToInt(s) < 1) or (StrToInt(s) > BITMAPNUM) then
+  if (StrToInt(s) < 1) or (StrToInt(s) > C_BITMAPNUM) then
     s := IntToStr(GBitMapNumber);
   GBitMapNumber := StrToInt(s);
   GPath := '\pic' + IntToStr(GBitMapNumber) + '\';
@@ -390,31 +389,30 @@ begin
   if sound <> 'NULL' then
   begin
     if MainForm.MenuOptionSound.Checked then
-      sndPlaySound(PChar(RESOURCEPATH + '\Sound\' + sound + '.wav'),
-        SND_ASYNC);
+      sndPlaySound(PChar(C_RESOURCEPATH + '\Sound\' + sound + '.wav'), SND_ASYNC);
   end
   else
     sndPlaySound(nil, SND_ASYNC);
 end;
 
-procedure TMainForm.ResetSelected(x, y: Integer);
+procedure TMainForm.ResetSelected(X, Y: Integer);
 var
   num: Integer;
 begin
-  num := data[x, y];
+  num := data[X, Y];
   GetBitmap(GBitMap, num);
-  MainPaintBox.Canvas.Draw(IToX(x), JToY(y), GBitMap);
+  MainPaintBox.Canvas.Draw(IToX(X), JToY(Y), GBitMap);
 end;
 
-procedure TMainForm.SetSelected(x, y: Integer);
+procedure TMainForm.SetSelected(X, Y: Integer);
 var
   num: Integer;
 begin
-  num := data[x, y];
+  num := data[X, Y];
   GetBitmap(GBitMap, 0);
-  MainPaintBox.Canvas.Draw(IToX(x), JToY(y), GBitMap);
+  MainPaintBox.Canvas.Draw(IToX(X), JToY(Y), GBitMap);
   GetBitmap(GBitMap, num);
-  MainPaintBox.Canvas.Draw(IToX(x), JToY(y), GBitMap, OPACITY);
+  MainPaintBox.Canvas.Draw(IToX(X), JToY(Y), GBitMap, C_OPACITY);
 end;
 
 procedure TMainForm.ShowArray;
@@ -435,8 +433,7 @@ begin
   else
     exit;
   MainPaintBoxPaint(Sender);
-  if (GHintA.X <> 0) and (GHintA.Y <> 0) and (GHintB.X <> 0) and (GHintB.Y <> 0)
-  then
+  if (GHintA.X <> 0) and (GHintA.Y <> 0) and (GHintB.X <> 0) and (GHintB.Y <> 0) then
   begin
     SetSelected(GHintA.X, GHintA.Y);
     SetSelected(GHintB.X, GHintB.Y);
@@ -525,43 +522,36 @@ procedure TMainForm.DrawGameRunningData;
 begin
   if not GGameRunning then
     exit;
-  with MainPaintBox do
+  with MainPaintBox.Canvas do
   begin
-    Canvas.Font.Color := clYellow;
-    Canvas.Font.Size := 10;
-    SetBkColor(Canvas.Handle, GBackGroundColor);
-    Canvas.TextOut(TEXTSTART, TEXTHEIGHT, '难度：                 ');
-    Canvas.TextOut(TEXTSTART, TEXTHEIGHT,
-      '难度：' + GetStringFromGameLevel(GGame));
-    Canvas.TextOut(TEXTSTART + TEXTSPACE + 20, TEXTHEIGHT,
-      '关卡：                         ');
-    Canvas.TextOut(TEXTSTART + TEXTSPACE + 20, TEXTHEIGHT,
-      '关卡：' + GetStringFromArrangeType(GChangeType));
-    Canvas.TextOut(TEXTSTART + 3 * TEXTSPACE, TEXTHEIGHT, '生命：     ');
-    Canvas.TextOut(TEXTSTART + 3 * TEXTSPACE, TEXTHEIGHT,
-      '生命：' + IntToStr(GLife));
-    Canvas.TextOut(TEXTSTART + 4 * TEXTSPACE, TEXTHEIGHT, '提示：     ');
-    Canvas.TextOut(TEXTSTART + 4 * TEXTSPACE, TEXTHEIGHT,
-      '提示：' + IntToStr(GHint));
-    Canvas.TextOut(TEXTSTART + 5 * TEXTSPACE, TEXTHEIGHT, '时间：');
+    Font.Color := clYellow;
+    Font.Size := 10;
+    SetBkColor(Handle, GBackGroundColor);
+    TextOut(C_TEXTSTART, C_TEXTHEIGHT, '难度：                 ');
+    TextOut(C_TEXTSTART, C_TEXTHEIGHT, '难度：' + GetStringFromGameLevel(GGame));
+    TextOut(C_TEXTSTART + C_TEXTSPACE + 20, C_TEXTHEIGHT, '关卡：                         ');
+    TextOut(C_TEXTSTART + C_TEXTSPACE + 20, C_TEXTHEIGHT, '关卡：' + GetStringFromArrangeType(GChangeType));
+    TextOut(C_TEXTSTART + 3 * C_TEXTSPACE, C_TEXTHEIGHT, '生命：     ');
+    TextOut(C_TEXTSTART + 3 * C_TEXTSPACE, C_TEXTHEIGHT, '生命：' + IntToStr(GLife));
+    TextOut(C_TEXTSTART + 4 * C_TEXTSPACE, C_TEXTHEIGHT, '提示：     ');
+    TextOut(C_TEXTSTART + 4 * C_TEXTSPACE, C_TEXTHEIGHT, '提示：' + IntToStr(GHint));
+    TextOut(C_TEXTSTART + 5 * C_TEXTSPACE, C_TEXTHEIGHT, '时间：');
   end;
 end;
 
 procedure TMainForm.DrawGameTime;
 begin
-  with MainPaintBox do
+  with MainPaintBox.Canvas do
   begin
-    Canvas.Pen.Color := clYellow;
-    Canvas.Brush.Color := GBackGroundColor;
-    Canvas.Pen.Width := 1;
-    Canvas.Rectangle(TEXTSTART + 5 * TEXTSPACE + GAMETIMESPACE, TEXTHEIGHT,
-      TEXTSTART + 5 * TEXTSPACE + GAMETIMESPACE + TOTALTIME *
-      (Integer(GGame) + 1), TEXTHEIGHT + 20);
-    Canvas.Pen.Color := clRed;
-    Canvas.Brush.Color := clRed;
-    Canvas.Rectangle(TEXTSTART + 5 * TEXTSPACE + GAMETIMESPACE + 1,
-      TEXTHEIGHT + 1, TEXTSTART + 5 * TEXTSPACE + GAMETIMESPACE + GTime *
-      (Integer(GGame) + 1) - 1, TEXTHEIGHT + 20 - 1);
+    Pen.Color := clYellow;
+    Brush.Color := GBackGroundColor;
+    Pen.Width := 1;
+    Rectangle(C_TEXTSTART + 5 * C_TEXTSPACE + C_GAMETIMESPACE, C_TEXTHEIGHT, C_TEXTSTART + 5 * C_TEXTSPACE + C_GAMETIMESPACE + C_TOTALTIME * (Integer(GGame) + 1),
+      C_TEXTHEIGHT + 20);
+    Pen.Color := clRed;
+    Brush.Color := clRed;
+    Rectangle(C_TEXTSTART + 5 * C_TEXTSPACE + C_GAMETIMESPACE + 1, C_TEXTHEIGHT + 1, C_TEXTSTART + 5 * C_TEXTSPACE + C_GAMETIMESPACE + GTime * (Integer(GGame) + 1) - 1,
+      C_TEXTHEIGHT + 20 - 1);
   end;
 end;
 
@@ -569,72 +559,54 @@ procedure TMainForm.DrawLine(line: TLine; num: Integer; flag: boolean);
 begin
   if flag then
   begin
-    with MainForm.MainPaintBox do
+    with MainForm.MainPaintBox.Canvas do
     begin
-      Canvas.Pen.Color := clRed;
-      Canvas.Pen.Width := 5;
+      Pen.Color := clRed;
+      Pen.Width := 5;
       if num = 3 then
       begin
-        Canvas.MoveTo(IToX(line[1].X) + R div 2,
-          JToY(line[1].Y) + R div 2);
-        Canvas.LineTo(IToX(line[2].X) + R div 2,
-          JToY(line[2].Y) + R div 2);
-        Canvas.LineTo(IToX(line[3].X) + R div 2,
-          JToY(line[3].Y) + R div 2);
+        MoveTo(IToX(line[1].X) + R div 2, JToY(line[1].Y) + R div 2);
+        LineTo(IToX(line[2].X) + R div 2, JToY(line[2].Y) + R div 2);
+        LineTo(IToX(line[3].X) + R div 2, JToY(line[3].Y) + R div 2);
       end
       else if num = 2 then
       begin
-        Canvas.MoveTo(IToX(line[1].X) + R div 2,
-          JToY(line[1].Y) + R div 2);
-        Canvas.LineTo(IToX(line[2].X) + R div 2,
-          JToY(line[2].Y) + R div 2);
+        MoveTo(IToX(line[1].X) + R div 2, JToY(line[1].Y) + R div 2);
+        LineTo(IToX(line[2].X) + R div 2, JToY(line[2].Y) + R div 2);
       end
       else if num = 4 then
       begin
-        Canvas.MoveTo(IToX(line[1].X) + R div 2,
-          JToY(line[1].Y) + R div 2);
-        Canvas.LineTo(IToX(line[4].X) + R div 2,
-          JToY(line[4].Y) + R div 2);
-        Canvas.LineTo(IToX(line[3].X) + R div 2,
-          JToY(line[3].Y) + R div 2);
-        Canvas.LineTo(IToX(line[2].X) + R div 2,
-          JToY(line[2].Y) + R div 2);
+        MoveTo(IToX(line[1].X) + R div 2, JToY(line[1].Y) + R div 2);
+        LineTo(IToX(line[4].X) + R div 2, JToY(line[4].Y) + R div 2);
+        LineTo(IToX(line[3].X) + R div 2, JToY(line[3].Y) + R div 2);
+        LineTo(IToX(line[2].X) + R div 2, JToY(line[2].Y) + R div 2);
       end;
     end;
   end
   else
   begin
-    with MainForm.MainPaintBox do
+    with MainForm.MainPaintBox.Canvas do
     begin
       MainForm.PanelMain.Color := GBackGroundColor;
-      Canvas.Pen.Color := GBackGroundColor;
-      Canvas.Pen.Width := 5;
+      Pen.Color := GBackGroundColor;
+      Pen.Width := 5;
       if num = 3 then
       begin
-        Canvas.MoveTo(IToX(line[1].X) + R div 2,
-          JToY(line[1].Y) + R div 2);
-        Canvas.LineTo(IToX(line[2].X) + R div 2,
-          JToY(line[2].Y) + R div 2);
-        Canvas.LineTo(IToX(line[3].X) + R div 2,
-          JToY(line[3].Y) + R div 2);
+        MoveTo(IToX(line[1].X) + R div 2, JToY(line[1].Y) + R div 2);
+        LineTo(IToX(line[2].X) + R div 2, JToY(line[2].Y) + R div 2);
+        LineTo(IToX(line[3].X) + R div 2, JToY(line[3].Y) + R div 2);
       end
       else if num = 2 then
       begin
-        Canvas.MoveTo(IToX(line[1].X) + R div 2,
-          JToY(line[1].Y) + R div 2);
-        Canvas.LineTo(IToX(line[2].X) + R div 2,
-          JToY(line[2].Y) + R div 2);
+        MoveTo(IToX(line[1].X) + R div 2, JToY(line[1].Y) + R div 2);
+        LineTo(IToX(line[2].X) + R div 2, JToY(line[2].Y) + R div 2);
       end
       else if num = 4 then
       begin
-        Canvas.MoveTo(IToX(line[1].X) + R div 2,
-          JToY(line[1].Y) + R div 2);
-        Canvas.LineTo(IToX(line[4].X) + R div 2,
-          JToY(line[4].Y) + R div 2);
-        Canvas.LineTo(IToX(line[3].X) + R div 2,
-          JToY(line[3].Y) + R div 2);
-        Canvas.LineTo(IToX(line[2].X) + R div 2,
-          JToY(line[2].Y) + R div 2);
+        MoveTo(IToX(line[1].X) + R div 2, JToY(line[1].Y) + R div 2);
+        LineTo(IToX(line[4].X) + R div 2, JToY(line[4].Y) + R div 2);
+        LineTo(IToX(line[3].X) + R div 2, JToY(line[3].Y) + R div 2);
+        LineTo(IToX(line[2].X) + R div 2, JToY(line[2].Y) + R div 2);
       end;
     end;
   end;
@@ -645,12 +617,14 @@ begin
   if GBackGroundImage = nil then
   begin
     GBackGroundImage := TImage.Create(PanelMain);
-    GBackGroundImage.Parent := PanelMain;
-    GBackGroundImage.Align := alClient;
-    GBackGroundImage.Visible := true;
-    GBackGroundImage.Stretch := true;
-    GBackGroundImage.Picture.Bitmap.LoadFromFile
-      (RESOURCEPATH + '\BackGround\Start.bmp');
+    with GBackGroundImage do
+    begin
+      Parent := PanelMain;
+      Align := alClient;
+      Visible := true;
+      Stretch := true;
+      Picture.Bitmap.LoadFromFile(C_RESOURCEPATH + '\BackGround\Start.bmp');
+    end;
   end;
 end;
 
@@ -676,8 +650,7 @@ begin
   end;
 end;
 
-procedure TMainForm.FormKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
+procedure TMainForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   if Key = VK_F5 then
     MenuOptionGetHintClick(Sender)
@@ -845,11 +818,10 @@ var
 begin
   if tmpNum = 0 then
   begin
-    path := RESOURCEPATH + '\BackGround\' +
-      IntToStr(ColorToNum(GBackGroundColor)) + '.bmp';
+    path := C_RESOURCEPATH + '\BackGround\' + IntToStr(ColorToNum(GBackGroundColor)) + '.bmp';
   end
   else
-    path := RESOURCEPATH + GPath + IntToStr(tmpNum) + '.bmp';
+    path := C_RESOURCEPATH + GPath + IntToStr(tmpNum) + '.bmp';
   if tmpBitmap <> nil then
     tmpBitmap.Free;
   tmpBitmap := TBitmap.Create;
@@ -861,13 +833,12 @@ var
   num: Integer;
   s: string;
 begin
-  num := random(MUSICNUM) + 1;
-  s := RESOURCEPATH + '\midi\music' + IntToStr(num) + '.mid';
+  num := random(C_MUSICNUM) + 1;
+  s := C_RESOURCEPATH + '\midi\music' + IntToStr(num) + '.mid';
   result := s;
 end;
 
-procedure TMainForm.MainPaintBoxMouseDown(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
+procedure TMainForm.MainPaintBoxMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
   p: TPoint;
   res: boolean;
@@ -910,27 +881,27 @@ begin
       if bIntersect then
       begin
         DrawLine(ShareLine, 3, true);
-        Sleep(SLEEPTIME);
+        Sleep(C_SLEEPTIME);
         DrawLine(ShareLine, 3, false);
       end
       else if bNear or bDirect then
       begin
         DrawLine(ShareLine, 2, true);
-        Sleep(SLEEPTIME);
+        Sleep(C_SLEEPTIME);
         DrawLine(ShareLine, 2, false);
       end
       else if bOther then
       begin
         DrawLine(ShareLine, 4, true);
-        Sleep(SLEEPTIME);
+        Sleep(C_SLEEPTIME);
         DrawLine(ShareLine, 4, false);
       end;
       Dark(p.X, p.Y);
       Dark(GetTop().X, GetTop().Y);
       pop();
       Inc(GTime, 3);
-      if GTime > TOTALTIME then
-        GTime := TOTALTIME;
+      if GTime > C_TOTALTIME then
+        GTime := C_TOTALTIME;
       DrawGameTime();
       if GameCheck() then
       begin
@@ -970,8 +941,7 @@ begin
             GameOver();
             GLife := 0;
             PlaySound('GameOver');
-            MessageBox(MainForm.Handle, '游戏结束!', '信息',
-              MB_OK or MB_ICONINFORMATION);
+            MessageBox(MainForm.Handle, '游戏结束!', '信息', MB_OK or MB_ICONINFORMATION);
             exit;
           end;
           MenuOptionRearrangeClick(Sender);
